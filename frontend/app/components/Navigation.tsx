@@ -10,15 +10,15 @@ export function Navigation() {
   };
 
   const navItems = [
-    { path: "/", label: "Dashboard", icon: "📊" },
-    { path: "/calendar", label: "Calendar", icon: "📅" },
-    { path: "/lessons", label: "Lessons", icon: "📚" },
-    { path: "/students", label: "Students", icon: "👥" },
+    { path: "/", label: "Dashboard", icon: "fas fa-chart-line" },
+    { path: "/calendar", label: "Calendar", icon: "fas fa-calendar-alt" },
+    { path: "/lessons", label: "Lessons", icon: "fas fa-book-open" },
+    { path: "/students", label: "Students", icon: "fas fa-users" },
   ];
 
   const settingsItems = [
-    { path: "/settings", label: "Preferences", icon: "⚙️" },
-    { path: "/billing", label: "Billing", icon: "💳" },
+    { path: "/settings", label: "Preferences", icon: "fas fa-cog" },
+    { path: "/billing", label: "Billing", icon: "fas fa-credit-card" },
   ];
 
   return (
@@ -27,7 +27,7 @@ export function Navigation() {
       <div className="p-6 border-b border-blue-200">
         <Link to="/" className="flex items-center space-x-2">
           <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center">
-            <span className="text-white font-bold text-lg">🎓</span>
+            <i className="fas fa-graduation-cap text-white"></i>
           </div>
           <span className="text-xl font-semibold text-slate-800">TutorCruncher AI</span>
         </Link>
@@ -45,14 +45,14 @@ export function Navigation() {
         <div className="flex items-center justify-between text-sm text-slate-600 mb-2">
           <span>Manage Organization</span>
           <button className="text-slate-500 hover:text-slate-700">
-            <span>+</span>
+            <i className="fas fa-plus"></i>
           </button>
         </div>
         <div className="flex items-center space-x-2 text-sm">
-          <span>📁</span>
+          <i className="fas fa-folder text-slate-600"></i>
           <span className="text-slate-700">Laura's Space</span>
           <button className="ml-auto text-slate-500 hover:text-slate-700">
-            <span>▼</span>
+            <i className="fas fa-chevron-down"></i>
           </button>
         </div>
       </div>
@@ -74,7 +74,7 @@ export function Navigation() {
                     : "text-slate-700 hover:bg-white/60 hover:text-blue-700"
                 }`}
               >
-                <span className="text-lg">{item.icon}</span>
+                <i className={`${item.icon} w-4`}></i>
                 <span>{item.label}</span>
               </Link>
             ))}
@@ -96,7 +96,7 @@ export function Navigation() {
                     : "text-slate-700 hover:bg-white/60 hover:text-blue-700"
                 }`}
               >
-                <span className="text-lg">{item.icon}</span>
+                <i className={`${item.icon} w-4`}></i>
                 <span>{item.label}</span>
               </Link>
             ))}
@@ -114,18 +114,18 @@ export function Navigation() {
             to="/rewards"
             className="flex items-center space-x-3 px-3 py-2 rounded-lg text-sm text-slate-700 hover:bg-white/60 hover:text-blue-700"
           >
-            <span className="text-lg">💎</span>
+            <i className="fas fa-gem w-4"></i>
             <span>Rewards</span>
           </Link>
           <Link
             to="/profile"
             className="flex items-center space-x-3 px-3 py-2 rounded-lg text-sm text-slate-700 hover:bg-white/60 hover:text-blue-700"
           >
-            <span className="text-lg">👤</span>
+            <i className="fas fa-user w-4"></i>
             <span>Profile</span>
           </Link>
           <button className="flex items-center space-x-3 px-3 py-2 rounded-lg text-sm text-slate-700 hover:bg-white/60 hover:text-blue-700 w-full text-left">
-            <span className="text-lg">🚪</span>
+            <i className="fas fa-sign-out-alt w-4"></i>
             <span>Sign out</span>
           </button>
         </div>
