@@ -1,7 +1,6 @@
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router";
 import { lessonsApi, type Student } from "../../data/api";
-import { ArrayFieldSection } from "./helpers";
 import { Button } from "../ui/Button";
 
 // Define the shape of a lesson
@@ -69,14 +68,13 @@ export const LessonForm = ({ students, lesson }: LessonFormProps) => {
       : await lessonsApi.create(cleaned);
 
     if (response) {
-      navigate("/lessons");
+      lesson ? navigate(`/lessons/${response.id}`) : navigate("/lessons");
     }
   };
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-8 min-h-full bg-cream">
       <div className="max-w-6xl mx-auto space-y-8">
-        {/* Basic Info */}
         <div className="bg-white border shadow-sm p-6 rounded-xl">
           <h2 className="text-xl font-semibold text-slate-800 mb-4">Basic Information</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -117,28 +115,9 @@ export const LessonForm = ({ students, lesson }: LessonFormProps) => {
           </div>
         </div>
 
-        {/* Notes */}
         <div className="bg-white border shadow-sm p-6 rounded-xl">
           <h2 className="text-xl font-semibold text-slate-800 mb-4">Lesson Notes</h2>
           <textarea {...register("notes")} rows={4} className="w-full px-3 py-2 border rounded-lg focus:ring-2" />
-        </div>
-
-        {/* Arrays */}
-        <div className="bg-white border shadow-sm p-6 rounded-xl space-y-6">
-          <h2 className="text-xl font-semibold text-slate-800 mb-4">Skills & Subjects</h2>
-          <ArrayFieldSection name="skills_practiced" label="Skills Practiced" control={control} register={register} placeholder="e.g., Completing the square" />
-          <ArrayFieldSection name="main_subjects_covered" label="Main Subjects Covered" control={control} register={register} placeholder="e.g., Quadratic formula" />
-        </div>
-
-        <div className="bg-white border shadow-sm p-6 rounded-xl space-y-6">
-          <h2 className="text-xl font-semibold text-slate-800 mb-4">Student Assessment</h2>
-          <ArrayFieldSection name="student_strengths_observed" label="Student Strengths Observed" control={control} register={register} placeholder="e.g., Quick to understand" />
-          <ArrayFieldSection name="student_weaknesses_observed" label="Student Weaknesses Observed" control={control} register={register} placeholder="e.g., Needs more practice with fractions" />
-        </div>
-
-        <div className="bg-white border shadow-sm p-6 rounded-xl space-y-6">
-          <h2 className="text-xl font-semibold text-slate-800 mb-4">Tutor Tips</h2>
-          <ArrayFieldSection name="tutor_tips" label="Tutor Tips" control={control} register={register} placeholder="e.g., Use more diagrams" />
         </div>
 
         <div className="flex justify-end">
