@@ -38,7 +38,7 @@ export const StudentCard = ({ student }: { student: Student }) => (
             </svg>
             <span className="text-xs font-semibold text-steel-blue uppercase tracking-wide">Recent</span>
           </div>
-          <span className="text-xl font-bold text-navy-blue">{student.recentLessons.length}</span>
+          <span className="text-xl font-bold text-navy-blue">{student?.recentLessons?.length}</span>
           <p className="text-xs text-slate-600">this week</p>
         </div>
       </div>
