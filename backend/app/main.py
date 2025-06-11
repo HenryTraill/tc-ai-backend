@@ -24,10 +24,7 @@ async def lifespan(app: FastAPI):
     if settings.sentry_dsn:
         import sentry_sdk
 
-        sentry_sdk.init(
-            dsn=settings.sentry_dsn,
-            traces_sample_rate=1.0,
-        )
+        sentry_sdk.init(dsn=settings.sentry_dsn, traces_sample_rate=1.0)
         logger.info('Sentry initialized')
 
     if settings.logfire_token:
@@ -80,4 +77,4 @@ async def health_check():
 if __name__ == '__main__':
     import uvicorn
 
-    uvicorn.run('app.main:app', host=settings.api_host, port=settings.api_port, reload=settings.debug)
+    uvicorn.run('app.main:app', host=settings.api_host, port=settings.api_port, reload=True)

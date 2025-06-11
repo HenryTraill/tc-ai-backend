@@ -46,7 +46,7 @@ celery-beat:
 
 # Seed database with sample data
 seed:
-	uv run python scripts/seed_data.py
+	uv run python -m scripts.seed_data
 
 run-dev:
 	uv run fastapi dev app/main.py

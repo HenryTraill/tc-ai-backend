@@ -1,25 +1,66 @@
 import type { Route } from "./+types/lesson-detail";
 import { Link } from "react-router";
-import { students, lessons } from "../data/students";
+import { useState, useEffect } from "react";
+import { studentsApi, lessonsApi, type Student, type Lesson } from "../data/api";
 
 export function meta({ params }: Route.MetaArgs) {
-  const lesson = lessons.find(l => l.id === params.lessonId);
   return [
-    { title: `${lesson?.topic || 'Lesson'} - TutorCruncher AI` },
-    { name: "description", content: `Lesson details for ${lesson?.topic} - TutorCruncher AI` },
+    { title: `Lesson - TutorCruncher AI` },
+    { name: "description", content: `Lesson details - TutorCruncher AI` },
   ];
 }
 
 export default function LessonDetail({ params }: Route.ComponentProps) {
-  const lesson = lessons.find(l => l.id === params.lessonId);
-  const student = lesson ? students.find(s => s.id === lesson.studentId) : null;
+  const [lesson, setLesson] = useState<Lesson | null>(null);
+  const [student, setStudent] = useState<Student | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
-  if (!lesson || !student) {
+  const lessonId = parseInt(params.lessonId, 10);
+
+  useEffect(() => {
+    async function fetchData() {
+      try {
+        setLoading(true);
+        const lessonData = await lessonsApi.getById(lessonId);
+        const studentData = await studentsApi.getById(lessonData.student_id);
+        setLesson(lessonData);
+        setStudent(studentData);
+      } catch (err) {
+        setError(err instanceof Error ? err.message : 'Failed to fetch lesson data');
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    if (!isNaN(lessonId)) {
+      fetchData();
+    } else {
+      setError('Invalid lesson ID');
+      setLoading(false);
+    }
+  }, [lessonId]);
+
+  if (loading) {
+    return (
+      <div className="p-8 min-h-full bg-gray-50 flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-slate-800 mx-auto mb-4"></div>
+          <p className="text-slate-600">Loading lesson...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (error || !lesson || !student) {
     return (
       <div className="p-8 min-h-full">
         <div className="max-w-6xl mx-auto">
           <div className="text-center">
-            <h1 className="text-3xl font-bold text-slate-800 mb-4">Lesson Not Found</h1>
+            <h1 className="text-3xl font-bold text-slate-800 mb-4">
+              {error ? 'Error Loading Lesson' : 'Lesson Not Found'}
+            </h1>
+            {error && <p className="text-red-600 mb-4">{error}</p>}
             <Link to="/lessons" className="text-blue-600 hover:text-blue-800">
               ← Back to Lessons
             </Link>
@@ -43,8 +84,8 @@ export default function LessonDetail({ params }: Route.ComponentProps) {
     <div className="p-8 min-h-full">
       <div className="max-w-6xl mx-auto">
         <div className="mb-6">
-          <Link 
-            to="/lessons" 
+          <Link
+            to="/lessons"
             className="inline-flex items-center text-sm font-medium text-slate-600 hover:text-slate-800"
           >
             <span className="mr-1">←</span>
@@ -61,7 +102,7 @@ export default function LessonDetail({ params }: Route.ComponentProps) {
                 <div className="flex items-center space-x-4 text-slate-600">
                   <span className="text-lg">{lesson.subject}</span>
                   <span>•</span>
-                  <Link 
+                  <Link
                     to={`/students/${student.id}`}
                     className="text-lg font-medium hover:text-blue-600 transition-colors"
                   >
@@ -85,7 +126,7 @@ export default function LessonDetail({ params }: Route.ComponentProps) {
               </div>
               <div>
                 <h3 className="text-sm font-medium text-slate-600 mb-2">Start Time</h3>
-                <p className="text-slate-800 font-medium">{lesson.startTime}</p>
+                <p className="text-slate-800 font-medium">{lesson.start_time}</p>
               </div>
               <div>
                 <h3 className="text-sm font-medium text-slate-600 mb-2">Duration</h3>
