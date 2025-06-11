@@ -2,7 +2,7 @@ import type { Route } from "./+types/lesson-detail";
 import { Link } from "react-router";
 import { useState, useEffect } from "react";
 import { lessonsApi, studentsApi, type Lesson, type Student } from "../data/api";
-import { LessonForm } from "~/components/forms/lessons/new";
+import { LessonForm } from "~/components/forms/lessons";
 
 
 

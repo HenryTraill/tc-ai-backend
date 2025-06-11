@@ -4,7 +4,7 @@ import { LessonListItem } from "~/components/LessonListItem";
 import { Link } from "react-router";
 import { useState, useEffect } from "react";
 import { studentsApi, lessonsApi, type Student, type Lesson } from "../data/api";
-import { Button } from "~/components/ui/Buttont";
+import { Button } from "~/components/ui/Button";
 
 export function meta({ }: Route.MetaArgs) {
   return [
@@ -101,7 +101,7 @@ export default function Lessons() {
             <h1 className="text-4xl font-bold text-slate-800 mb-2">Lessons ({lessons.length})</h1>
             <p className="text-slate-600 text-lg">All tutoring sessions and lesson details</p>
           </div>
-          <Button href="/lessons/new" icon="fa-plus">Add Lesson</Button>
+          <Button href="/lessons/new" icon="plus">Add Lesson</Button>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">

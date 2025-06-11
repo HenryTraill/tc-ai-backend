@@ -1,7 +1,63 @@
 import type { Route } from "./+types/lesson-detail";
-import { Link } from "react-router";
+import { Link, useNavigate } from "react-router";
 import { useState, useEffect } from "react";
 import { studentsApi, lessonsApi, type Student, type Lesson } from "../data/api";
+import { Button } from "~/components/ui/Button";
+
+
+export const ConfirmDeleteButton = ({ lessonId }: { lessonId: number }) => {
+  const [open, setOpen] = useState(false);
+  const [deleting, setDeleting] = useState(false);
+  const navigate = useNavigate();
+
+  const handleDelete = async () => {
+    setDeleting(true);
+    try {
+      await lessonsApi.delete(lessonId);
+      navigate("/lessons");
+    } catch (err) {
+      alert("Failed to delete lesson. Please try again.");
+    } finally {
+      setDeleting(false);
+    }
+  };
+
+  return (
+    <>
+      <Button
+        onClick={() => setOpen(true)}
+        icon="trash"
+        variant="warning"
+      >
+        Delete Lesson
+      </Button>
+
+      {open && (
+        <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
+          <div className="bg-white rounded-lg shadow-lg p-6 w-full max-w-md">
+            <h2 className="text-lg font-semibold text-slate-800 mb-4">Confirm Deletion</h2>
+            <p className="text-slate-600 mb-6">Are you sure you want to delete this lesson? This action cannot be undone.</p>
+            <div className="flex justify-end gap-2">
+              <button
+                onClick={() => setOpen(false)}
+                className="px-4 py-2 rounded-lg text-slate-700 border border-gray-300 hover:bg-gray-100"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleDelete}
+                disabled={deleting}
+                className="px-4 py-2 rounded-lg bg-red-600 text-white hover:bg-red-700 disabled:opacity-50"
+              >
+                {deleting ? "Deleting..." : "Yes, Delete"}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+    </>
+  );
+};
 
 export function meta({ params }: Route.MetaArgs) {
   return [
@@ -83,7 +139,7 @@ export default function LessonDetail({ params }: Route.ComponentProps) {
   return (
     <div className="p-8 min-h-full bg-cream">
       <div className="max-w-6xl mx-auto">
-        <div className="mb-6">
+        <div className="mb-6 flex items-center justify-between">
           <Link
             to="/lessons"
             className="inline-flex items-center text-sm font-medium text-slate-600 hover:text-slate-800"
@@ -91,6 +147,14 @@ export default function LessonDetail({ params }: Route.ComponentProps) {
             <span className="mr-1">←</span>
             Back to Lessons
           </Link>
+          <div className="flex gap-2">
+            <Button
+              variant="primary"
+              href={`/lessons/${lesson.id}/edit`}
+              icon="pencil"
+            > Edit</Button>
+            <ConfirmDeleteButton lessonId={lesson.id} />
+          </div>
         </div>
 
         {/* Lesson Header */}
