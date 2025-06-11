@@ -5,7 +5,7 @@ import type { Lesson } from "../data/dummy";
 import LessonCard from "../components/LessonCard";
 import { useState } from "react";
 
-export function meta({}: Route.MetaArgs) {
+export function meta({ }: Route.MetaArgs) {
   return [
     { title: "TutorCruncher AI - Lessons" },
     { name: "description", content: "Manage your lessons" },
@@ -21,11 +21,11 @@ export default function Lessons() {
   const { lessons } = useLoaderData<typeof loader>();
   const [searchParams, setSearchParams] = useSearchParams();
   const [currentPage, setCurrentPage] = useState(1);
-  
+
   const lessonType = searchParams.get('type') || 'future';
   const LESSONS_PER_PAGE = 5;
 
-  const filteredLessons = lessons.filter(lesson => 
+  const filteredLessons = lessons.filter(lesson =>
     lessonType === 'future' ? lesson.status === 'upcoming' : lesson.status === 'completed'
   );
 
@@ -42,26 +42,24 @@ export default function Lessons() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <h1 className="text-3xl font-bold text-gray-900">Lessons</h1>
-        
+
         {/* Toggle */}
-        <div className="bg-white rounded-lg p-1 shadow-sm border border-gray-200">
+        <div className="bg-white rounded-lg p-1 shadow-sm border border-black">
           <button
             onClick={() => handleToggle('future')}
-            className={`px-4 py-2 rounded-md font-medium transition-colors ${
-              lessonType === 'future'
-                ? 'bg-blue-100 text-blue-800'
-                : 'text-gray-600 hover:text-gray-900'
-            }`}
+            className={`px-4 py-2 rounded-md font-medium transition-colors ${lessonType === 'future'
+              ? 'bg-blue-100 text-blue-800'
+              : 'text-gray-600 hover:text-gray-900'
+              }`}
           >
             Future Lessons
           </button>
           <button
             onClick={() => handleToggle('past')}
-            className={`px-4 py-2 rounded-md font-medium transition-colors ${
-              lessonType === 'past'
-                ? 'bg-blue-100 text-blue-800'
-                : 'text-gray-600 hover:text-gray-900'
-            }`}
+            className={`px-4 py-2 rounded-md font-medium transition-colors ${lessonType === 'past'
+              ? 'bg-blue-100 text-blue-800'
+              : 'text-gray-600 hover:text-gray-900'
+              }`}
           >
             Past Lessons
           </button>
@@ -87,19 +85,19 @@ export default function Lessons() {
           <button
             onClick={() => setCurrentPage(Math.max(1, currentPage - 1))}
             disabled={currentPage === 1}
-            className="px-4 py-2 bg-white border border-gray-200 rounded-md disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50"
+            className="px-4 py-2 bg-white border border-black rounded-md disabled:opacity-50 disabled:cursor-not-allowed hover:bg-cream"
           >
             Previous
           </button>
-          
+
           <span className="text-gray-600">
             Page {currentPage} of {totalPages}
           </span>
-          
+
           <button
             onClick={() => setCurrentPage(Math.min(totalPages, currentPage + 1))}
             disabled={currentPage === totalPages}
-            className="px-4 py-2 bg-white border border-gray-200 rounded-md disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50"
+            className="px-4 py-2 bg-white border border-black rounded-md disabled:opacity-50 disabled:cursor-not-allowed hover:bg-cream"
           >
             Next
           </button>

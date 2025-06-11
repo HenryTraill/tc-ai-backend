@@ -35,7 +35,7 @@ export const students: Student[] = [
     recentLessons: []
   },
   {
-    id: "2", 
+    id: "2",
     name: "Marcus Chen",
     grade: "10th Grade",
     strengths: ["Excellent at calculus", "Great attention to detail", "Motivated student"],
@@ -45,7 +45,7 @@ export const students: Student[] = [
   },
   {
     id: "3",
-    name: "Sofia Rodriguez", 
+    name: "Sofia Rodriguez",
     grade: "6th Grade",
     strengths: ["Creative thinking", "Good at fractions", "Eager to learn"],
     weaknesses: ["Needs help with multiplication tables", "Difficulty with multi-step problems"],
@@ -58,9 +58,9 @@ export const lessons: Lesson[] = [
   {
     id: "1",
     studentId: "1",
-    date: "2024-01-15",
+    date: "2025-06-16",
     startTime: "3:00 PM",
-    subject: "Mathematics",
+    subject: "Science",
     topic: "Quadratic Equations",
     duration: 60,
     notes: "Emma showed good progress with completing the square method. Still needs practice with word problems involving quadratics.",
@@ -71,11 +71,11 @@ export const lessons: Lesson[] = [
     tutor_tips: ["Use visual aids and graphing to reinforce concepts", "Break down word problems into smaller steps", "Encourage her to double-check work", "Practice factoring regularly"]
   },
   {
-    id: "2", 
+    id: "2",
     studentId: "1",
-    date: "2024-01-08",
+    date: "2025-06-02",
     startTime: "3:00 PM",
-    subject: "Mathematics",
+    subject: "English",
     topic: "Linear Functions",
     duration: 60,
     notes: "Great understanding of slope-intercept form. Worked on graphing linear equations.",
@@ -87,8 +87,8 @@ export const lessons: Lesson[] = [
   },
   {
     id: "3",
-    studentId: "2", 
-    date: "2024-01-12",
+    studentId: "2",
+    date: "2025-06-20",
     startTime: "4:30 PM",
     subject: "Mathematics",
     topic: "Derivatives",
@@ -103,7 +103,7 @@ export const lessons: Lesson[] = [
   {
     id: "4",
     studentId: "3",
-    date: "2024-01-10", 
+    date: "2025-06-10",
     startTime: "2:00 PM",
     subject: "Mathematics",
     topic: "Multiplication Tables",
@@ -119,5 +119,5 @@ export const lessons: Lesson[] = [
 
 // Add recent lessons to students
 students[0].recentLessons = lessons.filter(l => l.studentId === "1");
-students[1].recentLessons = lessons.filter(l => l.studentId === "2"); 
+students[1].recentLessons = lessons.filter(l => l.studentId === "2");
 students[2].recentLessons = lessons.filter(l => l.studentId === "3");

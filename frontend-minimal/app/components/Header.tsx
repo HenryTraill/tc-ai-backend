@@ -5,12 +5,12 @@ export default function Header() {
   const [showDropdown, setShowDropdown] = useState(false);
 
   return (
-    <header className="w-full bg-white border-b border-gray-200">
+    <header className="w-full bg-white border-b border-black">
       <div className="px-4 py-4">
         <div className="flex items-center justify-between">
           {/* Title */}
           <h1 className="text-xl font-semibold text-gray-900">TutorCruncher AI</h1>
-          
+
           {/* Center Navbar */}
           <nav className="flex items-center space-x-8">
             <Link to="/" className="text-gray-700 hover:text-gray-900 font-medium">
@@ -25,7 +25,7 @@ export default function Header() {
             <Link to="/insights" className="text-gray-700 hover:text-gray-900 font-medium">
               Insights
             </Link>
-            
+
             {/* Plus dropdown */}
             <div className="relative">
               <button
@@ -35,17 +35,17 @@ export default function Header() {
                 +
               </button>
               {showDropdown && (
-                <div className="absolute top-full right-0 mt-1 bg-white border border-gray-200 rounded-lg shadow-lg py-2 min-w-[150px] z-10">
+                <div className="absolute top-full right-0 mt-1 bg-white border border-black rounded-lg shadow-lg py-2 min-w-[150px] z-10">
                   <Link
                     to="/lessons/new"
-                    className="block px-4 py-2 text-gray-700 hover:bg-gray-50"
+                    className="block px-4 py-2 text-gray-700 hover:bg-cream"
                     onClick={() => setShowDropdown(false)}
                   >
                     Create Lesson
                   </Link>
                   <Link
                     to="/students/new"
-                    className="block px-4 py-2 text-gray-700 hover:bg-gray-50"
+                    className="block px-4 py-2 text-gray-700 hover:bg-cream"
                     onClick={() => setShowDropdown(false)}
                   >
                     Create Student
@@ -54,7 +54,7 @@ export default function Header() {
               )}
             </div>
           </nav>
-          
+
           {/* Settings cog */}
           <Link to="/settings" className="text-gray-700 hover:text-gray-900">
             <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
