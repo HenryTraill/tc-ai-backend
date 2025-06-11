@@ -1,35 +1,9 @@
 import type { Route } from "./+types/students";
-import { Link } from "react-router";
 import { StudentCard } from "~/components/StudentCard";
 import { useState, useEffect } from "react";
-import { studentsApi, lessonsApi, type Student as ApiStudent, type Lesson as ApiLesson } from "../data/api";
+import { studentsApi, lessonsApi, type Student as ApiStudent, type Lesson as ApiLesson, type Student } from "../data/api";
+import { fullName } from "~/helpers/students";
 
-// Frontend Student type (for components)
-interface Student {
-  id: string;
-  name: string;
-  grade: string;
-  strengths: string[];
-  weaknesses: string[];
-  lessonsCompleted: number;
-  recentLessons: Lesson[];
-}
-
-interface Lesson {
-  id: string;
-  studentId: string;
-  date: string;
-  startTime: string;
-  subject: string;
-  topic: string;
-  duration: number;
-  notes: string;
-  skills_practiced: string[];
-  main_subjects_covered: string[];
-  student_strengths_observed: string[];
-  student_weaknesses_observed: string[];
-  tutor_tips: string[];
-}
 
 // Transform API data to frontend format
 function transformApiStudentToFrontend(apiStudent: ApiStudent, lessons: ApiLesson[]): Student {
@@ -58,7 +32,7 @@ function transformApiStudentToFrontend(apiStudent: ApiStudent, lessons: ApiLesso
 
   return {
     id: apiStudent.id.toString(),
-    name: apiStudent.name,
+    name: fullName(apiStudent),
     grade: apiStudent.grade,
     strengths: apiStudent.strengths,
     weaknesses: apiStudent.weaknesses,

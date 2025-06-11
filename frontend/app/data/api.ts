@@ -4,7 +4,8 @@ const API_BASE_URL = 'http://localhost:8000/api';
 // Types matching backend models
 export interface Student {
     id: number;
-    name: string;
+    first_name: string;
+    last_name: string;
     grade: string;
     strengths: string[];
     weaknesses: string[];

@@ -1,9 +1,8 @@
 import { Link } from "react-router";
 import { Chip } from "./ui/Chip";
-import { students, type Lesson } from "~/data/students";
+import { type Lesson } from "~/data/students";
 
 export const LessonListItem = ({ lesson }: { lesson: Lesson }) => {
-  const studentName = students.find(s => s.id === lesson.studentId)?.name || 'Unknown Student';
 
   return (<Link
     key={lesson.id}
@@ -24,7 +23,7 @@ export const LessonListItem = ({ lesson }: { lesson: Lesson }) => {
             <svg className="w-4 h-4 text-steel-blue" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
             </svg>
-            <span className="font-semibold text-navy-blue">{studentName}</span>
+            <span className="font-semibold text-navy-blue">{lesson.studentName}</span>
           </div>
 
           <div className="flex items-center gap-2">

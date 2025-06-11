@@ -2,6 +2,7 @@ import type { Route } from "./+types/calendar";
 import { useState, useEffect } from "react";
 import { studentsApi, lessonsApi, type Student, type Lesson } from "../data/api";
 import Calendar from "~/components/Calendar";
+import { fullName } from "~/helpers/students";
 
 export function meta({ }: Route.MetaArgs) {
   return [
@@ -9,10 +10,6 @@ export function meta({ }: Route.MetaArgs) {
     { name: "description", content: "View lessons by date with TutorCruncher AI" },
   ];
 }
-
-type LessonWithStudent = Lesson & {
-  studentName: string;
-};
 
 export default function CalendarPage() {
   const [lessons, setLessons] = useState<Lesson[]>([]);
@@ -75,7 +72,7 @@ export default function CalendarPage() {
 
   const lessonsWithStudents: LessonWithStudent[] = lessons.map(lesson => ({
     ...lesson,
-    studentName: students.find(s => s.id === lesson.student_id)?.name || 'Unknown Student'
+    studentName: fullName(students.find(s => s.id === lesson.student_id)) || 'Unknown Student'
   }));
 
   return (
