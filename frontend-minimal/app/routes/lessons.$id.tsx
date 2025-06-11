@@ -47,8 +47,8 @@ export default function LessonDetails() {
           ← Back to Lessons
         </Link>
         <span className={`inline-block px-3 py-1 rounded-full text-sm font-medium ${lesson.status === 'upcoming'
-            ? 'bg-blue-100 text-blue-800'
-            : 'bg-green-100 text-green-800'
+          ? 'bg-blue-100 text-blue-800'
+          : 'bg-green-100 text-green-800'
           }`}>
           {lesson.status === 'upcoming' ? 'Upcoming' : 'Completed'}
         </span>
@@ -86,7 +86,7 @@ export default function LessonDetails() {
 
           <div>
             <span className="text-gray-600">Time: </span>
-            <span className="font-medium">{formatTime(lesson.startTime)}</span>
+            <span className="font-medium">{formatTime(lesson.start_time)}</span>
           </div>
 
           <div>

@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import { Link } from 'react-router';
-import { lessons, students } from '~/data/students';
 
 const dateUtils = {
   startOfMonth: (date) => {
@@ -94,8 +93,6 @@ const LessonCard = ({ lesson, size = 'small', showDate = false }) => {
     large: 'text-base p-3'
   };
 
-  const studentName = students.find(s => s.id === lesson.studentId)?.name || 'Unknown Student';
-
   return (
     <Link to={`/lessons/${lesson.id}`}
       className={`${sizeClasses[size]} rounded border bg-cream cursor-pointer hover:opacity-50 transition-opacity flex flex-col text-navy-blue`}
@@ -104,12 +101,12 @@ const LessonCard = ({ lesson, size = 'small', showDate = false }) => {
 
       <div className="flex items-center gap-1 mt-1 text-xs">
         <i className="fas fa-user"></i>
-        <span>{studentName}</span>
+        <span>{lesson.studentName}</span>
       </div>
 
       <div className="flex items-center gap-1 mt-1 text-xs">
         <i className="fas fa-clock"></i>
-        <span>{lesson.startTime}</span>
+        <span>{lesson.start_time}</span>
       </div>
     </Link>
   );
@@ -302,7 +299,7 @@ const DayView = ({ currentDate, lessons }) => {
   );
 };
 
-const Calendar = () => {
+const Calendar = ({ lessons }) => {
   const [currentDate, setCurrentDate] = useState(new Date());
   const [view, setView] = useState('month');
 
@@ -338,7 +335,7 @@ const Calendar = () => {
     }
   };
 
-  const renderView = () => {
+  const renderView = (lessons) => {
     switch (view) {
       case 'day':
         return <DayView currentDate={currentDate} lessons={lessons} />;
@@ -392,7 +389,7 @@ const Calendar = () => {
         </div>
       </div>
 
-      {renderView()}
+      {renderView(lessons)}
     </div>
   );
 };

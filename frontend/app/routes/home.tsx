@@ -78,6 +78,8 @@ export default function Home() {
     .sort((a, b) => new Date(b.created_at || b.date).getTime() - new Date(a.created_at || a.date).getTime())
     .slice(0, 3);
 
+  console.log('recentLessons', recentLessons)
+
   return (
     <div className="p-8 min-h-full bg-cream">
       <div className="max-w-6xl mx-auto">

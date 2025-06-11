@@ -78,30 +78,11 @@ export default function CalendarPage() {
     studentName: students.find(s => s.id === lesson.student_id)?.name || 'Unknown Student'
   }));
 
-  const groupedLessons = lessonsWithStudents.reduce((groups, lesson) => {
-    const date = lesson.date;
-    if (!groups[date]) {
-      groups[date] = [];
-    }
-    groups[date].push(lesson);
-    return groups;
-  }, {} as Record<string, typeof lessonsWithStudents>);
-
-  const sortedDates = Object.keys(groupedLessons).sort((a, b) =>
-    new Date(b).getTime() - new Date(a).getTime()
-  );
-
-  const formatDate = (dateString: string) => {
-    const date = new Date(dateString);
-    return date.toLocaleDateString('en-US', {
-      weekday: 'long',
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric'
-    });
-  };
-
   return (
-    <Calendar lessons={lessonsWithStudents} />
+    <div className="p-8 min-h-full bg-cream">
+      <div className="max-w-6xl mx-auto">
+        <Calendar lessons={lessonsWithStudents} />
+      </div>
+    </div>
   )
 }
