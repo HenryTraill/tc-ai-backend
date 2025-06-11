@@ -1,0 +1,48 @@
+[project]
+name = "tutorcruncher-backend"
+version = "0.1.0"
+description = "FastAPI backend for TutorCruncher AI"
+requires-python = ">=3.12"
+dependencies = [
+    "fastapi==0.115.12",
+    "sqlmodel==0.0.24",
+    "uvicorn==0.34.3",
+    "pydantic==2.11.5",
+    "pydantic-settings==2.9.1",
+    "python-multipart==0.0.20",
+    "celery==5.5.3",
+    "redis==6.2.0",
+    "logfire==3.18.0",
+    "sentry-sdk==2.29.1",
+    "python-dotenv==1.1.0",
+    "psycopg2-binary==2.9.10",
+    "alembic==1.16.1",
+]
+
+[project.optional-dependencies]
+dev = [
+    "ruff==0.11.13",
+    "pytest==8.4.0",
+    "pytest-sugar==1.0.0",
+    "coverage==7.8.2",
+    "pytest-asyncio==1.0.0",
+    "httpx==0.28.1",
+]
+
+[tool.ruff]
+line-length = 120
+
+[tool.ruff.lint]
+extend-select = ["I"]
+
+[tool.ruff.format]
+quote-style = "single"
+
+[tool.ruff.lint.isort]
+combine-as-imports = true
+
+[tool.coverage.run]
+omit = ["tests/*"]
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto" 
