@@ -6,14 +6,14 @@ export const StudentCard = ({ student }: { student: Student }) => (
   <Link
     key={student.id}
     to={`/students/${student.id}`}
-    className="bg-white border-2 border-slate-200 rounded-2xl hover:shadow-xl hover:border-sky-blue transition-all duration-300 p-5 block group hover:-translate-y-1 hover:bg-cream"
+    className="bg-white border rounded-2xl hover:shadow-xl hover:border-sky-blue transition-all duration-300 p-5 block group hover:-translate-y-1 hover:bg-cream"
   >
     <div className="flex items-center justify-between mb-4">
       <h3 className="text-lg font-bold text-navy-blue group-hover:text-sky-blue transition-colors duration-300">
         {student.name}
       </h3>
       <div className="flex items-center gap-2">
-        <span className="text-sm font-bold text-navy-blue bg-baby-blue px-3 py-1.5 rounded-full border border-sky-blue">
+        <span className="text-sm font-bold text-navy-blue px-3 py-1.5 rounded-full border border-steel-blue">
           {student.grade}
         </span>
       </div>

@@ -38,7 +38,7 @@ export default function Lessons() {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-          <div className="group bg-gradient-to-br from-blue-50 to-indigo-100 border border-blue-200 rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
+          <div className="group border bg-white rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
             <div className="flex items-center justify-between mb-3">
               <h3 className="text-sm font-semibold text-blue-700 uppercase tracking-wide">Total Hours</h3>
               <div className="w-8 h-8 bg-blue-500 rounded-lg flex items-center justify-center">
@@ -61,8 +61,7 @@ export default function Lessons() {
             </div>
           </div>
 
-          {/* Average Duration Card */}
-          <div className="group bg-gradient-to-br from-emerald-50 to-green-100 border border-emerald-200 rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
+          <div className="group border bg-white rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
             <div className="flex items-center justify-between mb-3">
               <h3 className="text-sm font-semibold text-emerald-700 uppercase tracking-wide">Avg Duration</h3>
               <div className="w-8 h-8 bg-emerald-500 rounded-lg flex items-center justify-center">
@@ -80,8 +79,7 @@ export default function Lessons() {
             <p className="text-sm text-slate-600">Per session</p>
           </div>
 
-          {/* Subjects Card */}
-          <div className="group bg-gradient-to-br from-purple-50 to-pink-100 border border-purple-200 rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
+          <div className="group border bg-white rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
             <div className="flex items-center justify-between mb-4">
               <h3 className="text-sm font-semibold text-purple-700 uppercase tracking-wide">Subjects</h3>
               <div className="w-8 h-8 bg-purple-500 rounded-lg flex items-center justify-center">
