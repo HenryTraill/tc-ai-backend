@@ -1,10 +1,8 @@
 import type { Route } from "./+types/lesson-detail";
 import { Link } from "react-router";
 import { useState, useEffect } from "react";
-import { lessonsApi, studentsApi, type Lesson, type Student } from "../data/api";
+import { lessonsApi, studentsApi, type Lesson, type Student } from "../../data/api";
 import { LessonForm } from "~/components/forms/lessons";
-
-
 
 export function meta({ params }: Route.MetaArgs) {
   return [
@@ -23,7 +21,7 @@ export default function LessonNew({ params }: Route.ComponentProps) {
       try {
         setLoading(true);
         const [lessonsData, studentsData] = await Promise.all([
-          lessonsApi.getById(params.lessonId),
+          lessonsApi.getById(Number(params.lessonId)),
           studentsApi.getAll()
         ]);
         setLesson(lessonsData);
