@@ -1,9 +1,12 @@
 from typing import Optional
 
+from pydantic import ConfigDict
 from pydantic_settings import BaseSettings
 
 
 class Settings(BaseSettings):
+    model_config = ConfigDict(env_file='.env', case_sensitive=False)
+
     # Database
     database_url: str = 'postgresql://admin:example@localhost/tcai'
 
@@ -23,10 +26,6 @@ class Settings(BaseSettings):
 
     # Logfire
     logfire_token: Optional[str] = None
-
-    class Config:
-        env_file = '.env'
-        case_sensitive = False
 
 
 settings = Settings()

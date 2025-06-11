@@ -3,6 +3,7 @@
 
 import random
 from datetime import datetime, timedelta
+
 from sqlmodel import Session, select
 
 from app.core.database import create_db_and_tables, engine
