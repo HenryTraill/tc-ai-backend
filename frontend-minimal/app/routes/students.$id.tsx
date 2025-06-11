@@ -15,11 +15,11 @@ export async function loader({ params }: Route.LoaderArgs) {
     getStudent(params.id),
     getLessonsByStudent(params.id)
   ]);
-  
+
   if (!student) {
     throw new Response("Student not found", { status: 404 });
   }
-  
+
   return { student, lessons };
 }
 
@@ -32,8 +32,8 @@ export default function StudentDetails() {
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
-        <Link 
-          to="/students" 
+        <Link
+          to="/students"
           className="text-blue-600 hover:text-blue-800 font-medium flex items-center"
         >
           ← Back to Students
@@ -41,22 +41,22 @@ export default function StudentDetails() {
       </div>
 
       {/* Student Info */}
-      <div className="bg-white rounded-lg p-6 border border-gray-200">
+      <div className="bg-white rounded-lg p-6 border border-black">
         <h1 className="text-2xl font-bold text-gray-900 mb-4">{student.name}</h1>
-        
+
         <div className="grid md:grid-cols-2 gap-6">
           <div className="space-y-3">
             <div>
               <span className="text-gray-600 font-medium">Age: </span>
               <span>{student.age} years old</span>
             </div>
-            
+
             <div>
               <span className="text-gray-600 font-medium">Address: </span>
               <span>{student.address}</span>
             </div>
           </div>
-          
+
           <div>
             <h3 className="text-lg font-semibold text-gray-900 mb-2">Current Progress</h3>
             <p className="text-gray-700 leading-relaxed">{student.progress}</p>

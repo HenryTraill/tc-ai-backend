@@ -40,11 +40,11 @@ export default function LessonDetail({ params }: Route.ComponentProps) {
   };
 
   return (
-    <div className="p-8 min-h-full">
+    <div className="p-8 min-h-full bg-cream">
       <div className="max-w-6xl mx-auto">
         <div className="mb-6">
-          <Link 
-            to="/lessons" 
+          <Link
+            to="/lessons"
             className="inline-flex items-center text-sm font-medium text-slate-600 hover:text-slate-800"
           >
             <span className="mr-1">←</span>
@@ -53,7 +53,7 @@ export default function LessonDetail({ params }: Route.ComponentProps) {
         </div>
 
         {/* Lesson Header */}
-        <div className="bg-white/80 backdrop-blur-sm border border-white/20 rounded-2xl mb-8 shadow-lg">
+        <div className="bg-white/80 backdrop-blur-sm border border-black rounded-2xl mb-8 shadow-lg">
           <div className="px-6 py-5 border-b border-slate-200">
             <div className="flex justify-between items-start">
               <div>
@@ -61,7 +61,7 @@ export default function LessonDetail({ params }: Route.ComponentProps) {
                 <div className="flex items-center space-x-4 text-slate-600">
                   <span className="text-lg">{lesson.subject}</span>
                   <span>•</span>
-                  <Link 
+                  <Link
                     to={`/students/${student.id}`}
                     className="text-lg font-medium hover:text-blue-600 transition-colors"
                   >
@@ -101,7 +101,7 @@ export default function LessonDetail({ params }: Route.ComponentProps) {
         </div>
 
         {/* Main Subjects Covered */}
-        <div className="bg-white/80 backdrop-blur-sm border border-white/20 rounded-2xl mb-8 shadow-lg">
+        <div className="bg-white/80 backdrop-blur-sm border border-black rounded-2xl mb-8 shadow-lg">
           <div className="px-6 py-4 border-b border-slate-200">
             <h2 className="text-xl font-semibold text-slate-800">Main Subjects Covered</h2>
             <p className="text-slate-600">Topics and concepts worked on during this lesson</p>
@@ -124,7 +124,7 @@ export default function LessonDetail({ params }: Route.ComponentProps) {
         {/* Student Performance */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
           {/* Strengths Observed */}
-          <div className="bg-white/80 backdrop-blur-sm border border-white/20 rounded-2xl shadow-lg">
+          <div className="bg-white/80 backdrop-blur-sm border border-black rounded-2xl shadow-lg">
             <div className="px-6 py-4 border-b border-slate-200">
               <h2 className="text-xl font-semibold text-slate-800">Student Strengths</h2>
               <p className="text-slate-600">Strengths observed during this lesson</p>
@@ -145,7 +145,7 @@ export default function LessonDetail({ params }: Route.ComponentProps) {
           </div>
 
           {/* Weaknesses Observed */}
-          <div className="bg-white/80 backdrop-blur-sm border border-white/20 rounded-2xl shadow-lg">
+          <div className="bg-white/80 backdrop-blur-sm border border-black rounded-2xl shadow-lg">
             <div className="px-6 py-4 border-b border-slate-200">
               <h2 className="text-xl font-semibold text-slate-800">Areas for Improvement</h2>
               <p className="text-slate-600">Challenges observed during this lesson</p>
@@ -167,19 +167,19 @@ export default function LessonDetail({ params }: Route.ComponentProps) {
         </div>
 
         {/* Tutor Tips */}
-        <div className="bg-white/80 backdrop-blur-sm border border-white/20 rounded-2xl mb-8 shadow-lg">
+        <div className="bg-white/80 backdrop-blur-sm border border-black rounded-2xl mb-8 shadow-lg">
           <div className="px-6 py-4 border-b border-slate-200">
             <h2 className="text-xl font-semibold text-slate-800">Tips for Future Sessions</h2>
             <p className="text-slate-600">Recommendations for continuing with this student</p>
           </div>
           <div className="p-6">
-            <div className="space-y-4">
+            <div className="grid grid-cols-2 gap-4">
               {lesson.tutor_tips.map((tip, index) => (
                 <div
                   key={index}
-                  className="flex items-start p-4 bg-purple-50/70 border border-purple-100 rounded-xl"
+                  className="flex items-start p-4 border border-steel-blue rounded-xl"
                 >
-                  <div className="w-6 h-6 bg-purple-500 rounded-full flex items-center justify-center mr-4 flex-shrink-0 mt-0.5">
+                  <div className="w-6 h-6 bg-black rounded-full flex items-center justify-center mr-4 flex-shrink-0 mt-0.5">
                     <span className="text-white text-xs font-bold">{index + 1}</span>
                   </div>
                   <span className="text-slate-800">{tip}</span>
@@ -190,7 +190,7 @@ export default function LessonDetail({ params }: Route.ComponentProps) {
         </div>
 
         {/* Skills Practiced */}
-        <div className="bg-white/80 backdrop-blur-sm border border-white/20 rounded-2xl shadow-lg">
+        <div className="bg-white/80 backdrop-blur-sm border border-black rounded-2xl shadow-lg">
           <div className="px-6 py-4 border-b border-slate-200">
             <h2 className="text-xl font-semibold text-slate-800">Skills Practiced</h2>
             <p className="text-slate-600">Specific skills worked on during this session</p>

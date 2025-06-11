@@ -40,17 +40,16 @@ export default function LessonDetails() {
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
-        <Link 
-          to="/lessons" 
+        <Link
+          to="/lessons"
           className="text-blue-600 hover:text-blue-800 font-medium flex items-center"
         >
           ← Back to Lessons
         </Link>
-        <span className={`inline-block px-3 py-1 rounded-full text-sm font-medium ${
-          lesson.status === 'upcoming' 
-            ? 'bg-blue-100 text-blue-800' 
+        <span className={`inline-block px-3 py-1 rounded-full text-sm font-medium ${lesson.status === 'upcoming'
+            ? 'bg-blue-100 text-blue-800'
             : 'bg-green-100 text-green-800'
-        }`}>
+          }`}>
           {lesson.status === 'upcoming' ? 'Upcoming' : 'Completed'}
         </span>
       </div>
@@ -68,28 +67,28 @@ export default function LessonDetails() {
       {/* Summary */}
       <div className="bg-white rounded-lg p-6 border border-gray-200">
         <h1 className="text-2xl font-bold text-gray-900 mb-4">{lesson.title}</h1>
-        
+
         <div className="space-y-3">
           <div>
             <span className="text-gray-600">Student: </span>
-            <Link 
-              to={`/students/${lesson.studentId}`} 
+            <Link
+              to={`/students/${lesson.studentId}`}
               className="text-blue-600 hover:text-blue-800 font-medium"
             >
               {lesson.studentName}
             </Link>
           </div>
-          
+
           <div>
             <span className="text-gray-600">Date: </span>
             <span className="font-medium">{formatDate(lesson.date)}</span>
           </div>
-          
+
           <div>
             <span className="text-gray-600">Time: </span>
             <span className="font-medium">{formatTime(lesson.startTime)}</span>
           </div>
-          
+
           <div>
             <span className="text-gray-600">Duration: </span>
             <span className="font-medium">{lesson.duration} minutes</span>
