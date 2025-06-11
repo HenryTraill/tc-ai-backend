@@ -33,21 +33,26 @@ A full-stack application for managing tutoring sessions, student profiles, and l
    make install-dev
    ```
 
-3. Set up your database connection by creating a `.env` file:
-   ```bash
-   cp env.example .env
-   # Edit .env with your database credentials
-   ```
-
-4. Create the database:
+3. Create the database:
    ```bash
    make reset-db
    ```
 
-5. Start the development server:
+4. Start the development server:
    ```bash
    make run-dev
    ```
+
+5. If you want seed data, then run:
+   ```bash
+   make seed
+   ```
+
+6. Create the .env file and add your DATABASE_URL to it
+   ```
+   DATABASE_URL = 'postgresql://postgres@localhost/tcai'
+   ```
+
 
 The backend API will be available at `http://localhost:8000`
 - API docs: `http://localhost:8000/docs`

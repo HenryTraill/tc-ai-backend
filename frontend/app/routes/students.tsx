@@ -1,9 +1,71 @@
 import type { Route } from "./+types/students";
 import { Link } from "react-router";
-import { students } from "../data/students";
 import { StudentCard } from "~/components/StudentCard";
 import { useState, useEffect } from "react";
-import { studentsApi, type Student } from "../data/api";
+import { studentsApi, lessonsApi, type Student as ApiStudent, type Lesson as ApiLesson } from "../data/api";
+
+// Frontend Student type (for components)
+interface Student {
+  id: string;
+  name: string;
+  grade: string;
+  strengths: string[];
+  weaknesses: string[];
+  lessonsCompleted: number;
+  recentLessons: Lesson[];
+}
+
+interface Lesson {
+  id: string;
+  studentId: string;
+  date: string;
+  startTime: string;
+  subject: string;
+  topic: string;
+  duration: number;
+  notes: string;
+  skills_practiced: string[];
+  main_subjects_covered: string[];
+  student_strengths_observed: string[];
+  student_weaknesses_observed: string[];
+  tutor_tips: string[];
+}
+
+// Transform API data to frontend format
+function transformApiStudentToFrontend(apiStudent: ApiStudent, lessons: ApiLesson[]): Student {
+  const studentLessons = lessons.filter(lesson => lesson.student_id === apiStudent.id);
+
+  // Get recent lessons (this week - last 7 days)
+  const oneWeekAgo = new Date();
+  oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
+  const recentLessons = studentLessons
+    .filter(lesson => new Date(lesson.date) >= oneWeekAgo)
+    .map(lesson => ({
+      id: lesson.id.toString(),
+      studentId: lesson.student_id.toString(),
+      date: lesson.date,
+      startTime: lesson.start_time,
+      subject: lesson.subject,
+      topic: lesson.topic,
+      duration: lesson.duration,
+      notes: lesson.notes,
+      skills_practiced: lesson.skills_practiced,
+      main_subjects_covered: lesson.main_subjects_covered,
+      student_strengths_observed: lesson.student_strengths_observed,
+      student_weaknesses_observed: lesson.student_weaknesses_observed,
+      tutor_tips: lesson.tutor_tips,
+    }));
+
+  return {
+    id: apiStudent.id.toString(),
+    name: apiStudent.name,
+    grade: apiStudent.grade,
+    strengths: apiStudent.strengths,
+    weaknesses: apiStudent.weaknesses,
+    lessonsCompleted: apiStudent.lessons_completed,
+    recentLessons,
+  };
+}
 
 export function meta({ }: Route.MetaArgs) {
   return [
@@ -18,11 +80,21 @@ export default function Students() {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    async function fetchStudents() {
+    async function fetchStudentsAndLessons() {
       try {
         setLoading(true);
-        const data = await studentsApi.getAll();
-        setStudents(data);
+        // Fetch both students and lessons in parallel
+        const [apiStudents, allLessons] = await Promise.all([
+          studentsApi.getAll(),
+          lessonsApi.getAll()
+        ]);
+
+        // Transform API data to frontend format
+        const transformedStudents = apiStudents.map(student =>
+          transformApiStudentToFrontend(student, allLessons)
+        );
+
+        setStudents(transformedStudents);
       } catch (err) {
         setError(err instanceof Error ? err.message : 'Failed to fetch students');
       } finally {
@@ -30,7 +102,7 @@ export default function Students() {
       }
     }
 
-    fetchStudents();
+    fetchStudentsAndLessons();
   }, []);
 
   if (loading) {
