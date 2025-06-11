@@ -1,9 +1,9 @@
 import type { Route } from "./+types/student-detail";
 import { Link } from "react-router";
-import { students, lessons } from "../data/students";
 import { LessonListItem } from "~/components/LessonListItem";
 import { useState, useEffect } from "react";
 import { studentsApi, lessonsApi, type Student, type Lesson } from "../data/api";
+import { fullName } from "~/helpers/students";
 
 export function meta({ params }: Route.MetaArgs) {
   return [
@@ -89,7 +89,7 @@ export default function StudentDetail({ params }: Route.ComponentProps) {
           <div className="px-6 py-5 border-b border-slate-200">
             <div className="flex justify-between items-center">
               <div>
-                <h1 className="text-4xl font-bold text-slate-800 mb-1">{student.name}</h1>
+                <h1 className="text-4xl font-bold text-slate-800 mb-1">{fullName(student)}</h1>
                 <p className="text-slate-600 text-lg">{student.grade}</p>
               </div>
               <div className="text-right">

@@ -3,6 +3,8 @@ import { Link } from "react-router";
 import { LessonListItem } from "~/components/LessonListItem";
 import { useState, useEffect } from "react";
 import { studentsApi, lessonsApi, type Student, type Lesson } from "../data/api";
+import type { LessonWithStudent } from "~/types/lessons";
+import { fullName } from "~/helpers/students";
 
 export function meta({ }: Route.MetaArgs) {
   return [
@@ -73,12 +75,14 @@ export default function Home() {
   const totalStudents = students.length;
   const totalLessons = lessons.length;
 
-  // Sort lessons by created_at or date and take the 3 most recent
-  const recentLessons = lessons
+  const lessonsWithStudents: LessonWithStudent[] = lessons.map(lesson => ({
+    ...lesson,
+    studentName: fullName(students.find(s => s.id === lesson.student_id) as Student) || 'Unknown Student'
+  }));
+
+  const recentLessons = lessonsWithStudents
     .sort((a, b) => new Date(b.created_at || b.date).getTime() - new Date(a.created_at || a.date).getTime())
     .slice(0, 3);
-
-  console.log('recentLessons', recentLessons)
 
   return (
     <div className="p-8 min-h-full bg-cream">

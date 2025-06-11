@@ -2,6 +2,7 @@ import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router";
 import { lessonsApi, type Student } from "../../data/api";
 import { Button } from "../ui/Button";
+import { fullName } from "~/helpers/students";
 
 // Define the shape of a lesson
 interface LessonData {
@@ -83,7 +84,7 @@ export const LessonForm = ({ students, lesson }: LessonFormProps) => {
               <select {...register("student_id")} required className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2">
                 <option value="">Select a student</option>
                 {students.map((student) => (
-                  <option key={student.id} value={student.id}>{student.name}</option>
+                  <option key={student.id} value={student.id}>{fullName(student)}</option>
                 ))}
               </select>
             </div>
