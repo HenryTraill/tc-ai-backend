@@ -44,11 +44,8 @@ class LessonUpdate(BaseModel):
     topic: Optional[str] = None
     duration: Optional[int] = None
     notes: Optional[str] = None
-    skills_practiced: Optional[list[str]] = None
-    main_subjects_covered: Optional[list[str]] = None
-    student_strengths_observed: Optional[list[str]] = None
-    student_weaknesses_observed: Optional[list[str]] = None
-    tutor_tips: Optional[list[str]] = None
+    # Note: skills_practiced, main_subjects_covered, student_strengths_observed,
+    # student_weaknesses_observed, and tutor_tips are intentionally excluded from updates
 
 
 class LessonRead(LessonBase):
