@@ -46,8 +46,9 @@ def test_create_student_invalid_client_id(client: TestClient):
         'grade': '9th Grade',
     }
     response = client.post('/api/students/', json=student_data)
-    # This might return 500 or 400 depending on database constraints
-    assert response.status_code in [400, 422, 500]
+    # Should return 404 when client doesn't exist
+    assert response.status_code == 404
+    assert 'Client not found' in response.json()['detail']
 
 
 def test_get_students(client: TestClient, session: Session):

@@ -1,4 +1,5 @@
-from datetime import datetime
+from datetime import datetime, timezone
+
 from fastapi import APIRouter, Depends, HTTPException
 from sqlmodel import Session, select
 
@@ -45,7 +46,7 @@ def update_client(client_id: int, client_data: ClientUpdate, session: Session = 
     for key, value in client_data_dict.items():
         setattr(client, key, value)
 
-    client.updated_at = datetime.utcnow()
+    client.updated_at = datetime.now(timezone.utc)
     session.add(client)
     session.commit()
     session.refresh(client)

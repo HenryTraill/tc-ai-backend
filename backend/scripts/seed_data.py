@@ -7,24 +7,61 @@ from datetime import datetime, timedelta
 from sqlmodel import Session, select
 
 from app.core.database import create_db_and_tables, engine
-from app.models import Lesson, Student
+from app.models import Client, Lesson, Student
 
-# Sample data from frontend
+# Sample clients data
+clients_data = [
+    {
+        'first_name': 'John',
+        'last_name': 'Johnson',
+        'email': 'johnson.family@example.com',
+        'phone': '+1-555-0101',
+        'address': '123 Oak Street, Springfield, IL',
+        'notes': 'Parent prefers evening communication',
+    },
+    {
+        'first_name': 'Li',
+        'last_name': 'Chen',
+        'email': 'chen.family@example.com',
+        'phone': '+1-555-0102',
+        'address': '456 Maple Avenue, Springfield, IL',
+        'notes': 'Student is very motivated, parent involved',
+    },
+    {
+        'first_name': 'Maria',
+        'last_name': 'Rodriguez',
+        'email': 'rodriguez.family@example.com',
+        'phone': '+1-555-0103',
+        'address': '789 Pine Road, Springfield, IL',
+        'notes': 'Younger student, needs patient approach',
+    },
+]
+
+# Sample students data (will be linked to clients)
 students_data = [
     {
-        'name': 'Emma Johnson',
+        'first_name': 'Emma',
+        'last_name': 'Johnson',
+        'email': 'emma.johnson@example.com',
+        'phone': '+1-555-0111',
         'grade': '8th Grade',
         'strengths': ['Quick learner', 'Strong in algebra', 'Good problem-solving skills'],
         'weaknesses': ['Struggles with geometry', 'Needs work on word problems'],
     },
     {
-        'name': 'Marcus Chen',
+        'first_name': 'Marcus',
+        'last_name': 'Chen',
+        'email': 'marcus.chen@example.com',
+        'phone': '+1-555-0112',
         'grade': '10th Grade',
         'strengths': ['Excellent at calculus', 'Great attention to detail', 'Motivated student'],
         'weaknesses': ['Sometimes rushes through problems', 'Needs confidence building'],
     },
     {
-        'name': 'Sofia Rodriguez',
+        'first_name': 'Sofia',
+        'last_name': 'Rodriguez',
+        'email': 'sofia.rodriguez@example.com',
+        'phone': '+1-555-0113',
         'grade': '6th Grade',
         'strengths': ['Creative thinking', 'Good at fractions', 'Eager to learn'],
         'weaknesses': ['Needs help with multiplication tables', 'Difficulty with multi-step problems'],
@@ -289,10 +326,27 @@ def seed_database():
             print('Database already contains data. Skipping seed.')
             return
 
+        print('Seeding clients...')
+        clients = []
+        for client_data in clients_data:
+            client = Client(**client_data)
+            session.add(client)
+            clients.append(client)
+
+        session.commit()
+
+        # Refresh to get IDs
+        for client in clients:
+            session.refresh(client)
+
         print('Seeding students...')
         students = []
-        for student_data in students_data:
-            student = Student(**student_data)
+        for i, student_data in enumerate(students_data):
+            # Link each student to the corresponding client
+            student_data_with_client = student_data.copy()
+            student_data_with_client['client_id'] = clients[i].id
+
+            student = Student(**student_data_with_client)
             session.add(student)
             students.append(student)
 
@@ -307,8 +361,9 @@ def seed_database():
 
         # Generate 8 lessons per student (5 past, 3 future)
         for student in students:
+            student_name = f'{student.first_name} {student.last_name}'
             student_lessons = generate_lessons_for_student(
-                student_id=student.id, student_name=student.name, grade=student.grade, num_lessons=8
+                student_id=student.id, student_name=student_name, grade=student.grade, num_lessons=8
             )
             all_lessons.extend(student_lessons)
 
@@ -320,7 +375,7 @@ def seed_database():
         session.commit()
 
         print('Database seeded successfully!')
-        print(f'Created {len(students_data)} students and {len(all_lessons)} lessons')
+        print(f'Created {len(clients_data)} clients, {len(students_data)} students and {len(all_lessons)} lessons')
 
         # Show breakdown of past vs future lessons
         today = datetime.now().date()
