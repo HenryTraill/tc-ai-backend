@@ -10,15 +10,15 @@ export function Navigation() {
   };
 
   const navItems = [
-    { path: "/", label: "Dashboard", icon: "fas fa-chart-line" },
-    { path: "/calendar", label: "Calendar", icon: "fas fa-calendar-alt" },
-    { path: "/lessons", label: "Lessons", icon: "fas fa-book-open" },
-    { path: "/students", label: "Students", icon: "fas fa-users" },
+    { path: "/", label: "Dashboard", icon: "fas fa-fw fa-chart-line" },
+    { path: "/calendar", label: "Calendar", icon: "fas fa-fw fa-calendar-alt" },
+    { path: "/lessons", label: "Lessons", icon: "fas fa-fw fa-book-open" },
+    { path: "/students", label: "Students", icon: "fas fa-fw fa-users" },
   ];
 
   const settingsItems = [
-    { path: "/settings", label: "Preferences", icon: "fas fa-cog" },
-    { path: "/billing", label: "Billing", icon: "fas fa-credit-card" },
+    { path: "/settings", label: "Preferences", icon: "fas fa-fw fa-cog" },
+    { path: "/billing", label: "Billing", icon: "fas fa-fw fa-credit-card" },
   ];
 
   return (

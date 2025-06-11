@@ -29,8 +29,8 @@ export default function LessonCard({ lesson }: LessonCardProps) {
         <div className="flex items-start justify-between mb-3">
           <div>
             <span className={`inline-block px-3 py-1 rounded-full text-sm font-medium ${lesson.status === 'upcoming'
-                ? 'bg-blue-100 text-blue-800'
-                : 'bg-green-100 text-green-800'
+              ? 'bg-blue-100 text-blue-800'
+              : 'bg-green-100 text-green-800'
               }`}>
               {lesson.status === 'upcoming' ? 'Upcoming' : 'Completed'}
             </span>

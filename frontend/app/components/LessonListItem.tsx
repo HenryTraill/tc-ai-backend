@@ -1,9 +1,11 @@
 import { Link } from "react-router";
 import { Chip } from "./ui/Chip";
-import type { Lesson } from "~/data/students";
+import { students, type Lesson } from "~/data/students";
 
-export const LessonListItem = ({ lesson }: { lesson: Lesson }) => (
-  <Link
+export const LessonListItem = ({ lesson }: { lesson: Lesson }) => {
+  const studentName = students.find(s => s.id === lesson.studentId)?.name || 'Unknown Student';
+
+  return (<Link
     key={lesson.id}
     to={`/lessons/${lesson.id}`}
     className="block border-2 border-slate-200 rounded-2xl p-6 bg-white hover:bg-cream hover:shadow-xl hover:border-sky-blue transition-all duration-300 group hover:-translate-y-1"
@@ -22,7 +24,7 @@ export const LessonListItem = ({ lesson }: { lesson: Lesson }) => (
             <svg className="w-4 h-4 text-steel-blue" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
             </svg>
-            <span className="font-semibold text-navy-blue">{lesson.studentName}</span>
+            <span className="font-semibold text-navy-blue">{studentName}</span>
           </div>
 
           <div className="flex items-center gap-2">
@@ -52,11 +54,6 @@ export const LessonListItem = ({ lesson }: { lesson: Lesson }) => (
         <span className="text-sm font-bold text-navy-blue bg-baby-blue px-4 py-2 rounded-full border border-sky-blue">
           {lesson.duration} min
         </span>
-        <div className="w-6 h-6 bg-sky-blue rounded-full flex items-center justify-center group-hover:bg-navy-blue transition-colors duration-300">
-          <svg className="w-3 h-3 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-          </svg>
-        </div>
       </div>
     </div>
 
@@ -86,5 +83,5 @@ export const LessonListItem = ({ lesson }: { lesson: Lesson }) => (
         ))}
       </div>
     </div>
-  </Link>
-);
+  </Link>)
+}

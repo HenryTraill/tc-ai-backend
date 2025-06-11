@@ -58,7 +58,7 @@ export const lessons: Lesson[] = [
   {
     id: "1",
     studentId: "1",
-    date: "2024-01-15",
+    date: "2025-06-16",
     startTime: "3:00 PM",
     subject: "Science",
     topic: "Quadratic Equations",
@@ -73,7 +73,7 @@ export const lessons: Lesson[] = [
   {
     id: "2",
     studentId: "1",
-    date: "2024-01-08",
+    date: "2025-06-02",
     startTime: "3:00 PM",
     subject: "English",
     topic: "Linear Functions",
@@ -88,7 +88,7 @@ export const lessons: Lesson[] = [
   {
     id: "3",
     studentId: "2",
-    date: "2024-01-12",
+    date: "2025-06-20",
     startTime: "4:30 PM",
     subject: "Mathematics",
     topic: "Derivatives",
@@ -103,7 +103,7 @@ export const lessons: Lesson[] = [
   {
     id: "4",
     studentId: "3",
-    date: "2024-01-10",
+    date: "2025-06-10",
     startTime: "2:00 PM",
     subject: "Mathematics",
     topic: "Multiplication Tables",
