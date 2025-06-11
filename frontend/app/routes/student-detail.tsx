@@ -2,24 +2,68 @@ import type { Route } from "./+types/student-detail";
 import { Link } from "react-router";
 import { students, lessons } from "../data/students";
 import { LessonListItem } from "~/components/LessonListItem";
+import { useState, useEffect } from "react";
+import { studentsApi, lessonsApi, type Student, type Lesson } from "../data/api";
 
 export function meta({ params }: Route.MetaArgs) {
-  const student = students.find(s => s.id === params.studentId);
   return [
-    { title: `${student?.name || 'Student'} - TutorCruncher AI` },
-    { name: "description", content: `Student profile for ${student?.name} - TutorCruncher AI` },
+    { title: `Student - TutorCruncher AI` },
+    { name: "description", content: `Student profile - TutorCruncher AI` },
   ];
 }
 
 export default function StudentDetail({ params }: Route.ComponentProps) {
-  const student = students.find(s => s.id === params.studentId);
-  const studentLessons = lessons.filter(l => l.studentId === params.studentId);
+  const [student, setStudent] = useState<Student | null>(null);
+  const [studentLessons, setStudentLessons] = useState<Lesson[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
-  if (!student) {
+  const studentId = parseInt(params.studentId, 10);
+
+  useEffect(() => {
+    async function fetchData() {
+      try {
+        setLoading(true);
+        const [studentData, lessonsData] = await Promise.all([
+          studentsApi.getById(studentId),
+          lessonsApi.getByStudent(studentId)
+        ]);
+        setStudent(studentData);
+        setStudentLessons(lessonsData);
+      } catch (err) {
+        setError(err instanceof Error ? err.message : 'Failed to fetch student data');
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    if (!isNaN(studentId)) {
+      fetchData();
+    } else {
+      setError('Invalid student ID');
+      setLoading(false);
+    }
+  }, [studentId]);
+
+  if (loading) {
+    return (
+      <div className="p-8 min-h-full bg-gray-50 flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-slate-800 mx-auto mb-4"></div>
+          <p className="text-slate-600">Loading student...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (error || !student) {
     return (
       <div className="container mx-auto px-4 py-8">
         <div className="text-center">
-          <h1 className="text-2xl font-bold text-gray-900 mb-4">Student Not Found</h1>
+          <h1 className="text-2xl font-bold text-gray-900 mb-4">
+            {error ? 'Error Loading Student' : 'Student Not Found'}
+          </h1>
+          {error && <p className="text-red-600 mb-4">{error}</p>}
           <Link to="/students" className="text-blue-600 hover:text-blue-800">
             ← Back to Students
           </Link>
@@ -50,7 +94,7 @@ export default function StudentDetail({ params }: Route.ComponentProps) {
               </div>
               <div className="text-right">
                 <p className="text-sm text-slate-600">Total Lessons</p>
-                <p className="text-3xl font-bold text-slate-800">{student.lessonsCompleted}</p>
+                <p className="text-3xl font-bold text-slate-800">{student.lessons_completed}</p>
               </div>
             </div>
           </div>
