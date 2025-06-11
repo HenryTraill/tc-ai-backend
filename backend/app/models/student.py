@@ -5,8 +5,8 @@ from sqlalchemy import JSON, Column
 from sqlmodel import Field, Relationship, SQLModel
 
 if TYPE_CHECKING:
-    from backend.app.models.lesson import Lesson
     from backend.app.models.client import Client
+    from backend.app.models.lesson import Lesson
 
 
 class StudentBase(SQLModel):

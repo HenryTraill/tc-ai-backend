@@ -69,8 +69,9 @@ def test_create_lesson_invalid_student_id(client: TestClient):
         'notes': 'Test lesson',
     }
     response = client.post('/api/lessons/', json=lesson_data)
-    # This might return 500 or 400 depending on database constraints
-    assert response.status_code in [400, 422, 500]
+    # Should return 404 when student doesn't exist
+    assert response.status_code == 404
+    assert 'Student not found' in response.json()['detail']
 
 
 def test_get_lessons(client: TestClient, session: Session):

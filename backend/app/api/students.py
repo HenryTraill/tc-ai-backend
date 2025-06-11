@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends, HTTPException
 from sqlmodel import Session, select
 
 from ..core.database import get_session
-from ..models import Student, StudentCreate, StudentRead, StudentUpdate
+from ..models import Client, Student, StudentCreate, StudentRead, StudentUpdate
 
 router = APIRouter(prefix='/students', tags=['students'])
 
@@ -27,6 +27,11 @@ def get_student(student_id: int, session: Session = Depends(get_session)):
 @router.post('/', response_model=StudentRead)
 def create_student(student_data: StudentCreate, session: Session = Depends(get_session)):
     """Create a new student"""
+    # Check if client exists
+    client = session.get(Client, student_data.client_id)
+    if not client:
+        raise HTTPException(status_code=404, detail='Client not found')
+
     student = Student(**student_data.model_dump())
     session.add(student)
     session.commit()

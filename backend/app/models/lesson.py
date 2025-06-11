@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timezone
 from typing import TYPE_CHECKING, List, Optional
 
 from pydantic import BaseModel
@@ -26,7 +26,7 @@ class LessonBase(SQLModel):
 
 class Lesson(LessonBase, table=True):
     id: Optional[int] = Field(default=None, primary_key=True)
-    created_at: datetime = Field(default_factory=datetime.utcnow)
+    created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
     updated_at: Optional[datetime] = None
 
     student: Optional['Student'] = Relationship(back_populates='lessons')
