@@ -33,8 +33,8 @@ format:
 
 # Reset database
 reset-db:
-	psql -h localhost -U postgres -c "DROP DATABASE IF EXISTS tc-ai"
-	psql -h localhost -U postgres -c "CREATE DATABASE tc-ai"
+	psql -h localhost -U postgres -c "DROP DATABASE IF EXISTS tcai"
+	psql -h localhost -U postgres -c "CREATE DATABASE tcai"
 
 # Run Celery worker
 celery:
@@ -47,6 +47,9 @@ celery-beat:
 # Seed database with sample data
 seed:
 	uv run python scripts/seed_data.py
+
+run-dev:
+	uv run fastapi dev app/main.py
 
 # Clean up cache files
 clean:

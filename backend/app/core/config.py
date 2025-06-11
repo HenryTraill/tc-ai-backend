@@ -5,7 +5,7 @@ from pydantic_settings import BaseSettings
 
 class Settings(BaseSettings):
     # Database
-    database_url: str = 'postgresql://user:password@localhost/tutorcruncher'
+    database_url: str = 'postgresql://postgres@localhost/tcai'
 
     # Redis
     redis_url: str = 'redis://localhost:6379/0'

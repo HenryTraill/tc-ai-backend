@@ -4,7 +4,7 @@ version = "0.1.0"
 description = "FastAPI backend for TutorCruncher AI"
 requires-python = ">=3.12"
 dependencies = [
-    "fastapi==0.115.12",
+    "fastapi[standard]==0.115.12",
     "sqlmodel==0.0.24",
     "uvicorn==0.34.3",
     "pydantic==2.11.5",

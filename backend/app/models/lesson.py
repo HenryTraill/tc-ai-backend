@@ -1,7 +1,8 @@
 from datetime import datetime
-from typing import TYPE_CHECKING, Optional
+from typing import TYPE_CHECKING, List, Optional
 
 from pydantic import BaseModel
+from sqlalchemy import JSON, Column
 from sqlmodel import Field, Relationship, SQLModel
 
 if TYPE_CHECKING:
@@ -16,11 +17,11 @@ class LessonBase(SQLModel):
     topic: str
     duration: int  # in minutes
     notes: str
-    skills_practiced: list[str] = Field(default_factory=list, sa_column_kwargs={'type_': 'JSON'})
-    main_subjects_covered: list[str] = Field(default_factory=list, sa_column_kwargs={'type_': 'JSON'})
-    student_strengths_observed: list[str] = Field(default_factory=list, sa_column_kwargs={'type_': 'JSON'})
-    student_weaknesses_observed: list[str] = Field(default_factory=list, sa_column_kwargs={'type_': 'JSON'})
-    tutor_tips: list[str] = Field(default_factory=list, sa_column_kwargs={'type_': 'JSON'})
+    skills_practiced: List[str] = Field(default_factory=list, sa_column=Column(JSON))
+    main_subjects_covered: List[str] = Field(default_factory=list, sa_column=Column(JSON))
+    student_strengths_observed: List[str] = Field(default_factory=list, sa_column=Column(JSON))
+    student_weaknesses_observed: List[str] = Field(default_factory=list, sa_column=Column(JSON))
+    tutor_tips: List[str] = Field(default_factory=list, sa_column=Column(JSON))
 
 
 class Lesson(LessonBase, table=True):

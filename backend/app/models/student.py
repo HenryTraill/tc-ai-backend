@@ -1,6 +1,7 @@
-from typing import TYPE_CHECKING, Optional
+from typing import TYPE_CHECKING, List, Optional
 
 from pydantic import BaseModel
+from sqlalchemy import JSON, Column
 from sqlmodel import Field, Relationship, SQLModel
 
 if TYPE_CHECKING:
@@ -10,13 +11,13 @@ if TYPE_CHECKING:
 class StudentBase(SQLModel):
     name: str
     grade: str
-    strengths: list[str] = Field(default_factory=list, sa_column_kwargs={'type_': 'JSON'})
-    weaknesses: list[str] = Field(default_factory=list, sa_column_kwargs={'type_': 'JSON'})
+    strengths: List[str] = Field(default_factory=list, sa_column=Column(JSON))
+    weaknesses: List[str] = Field(default_factory=list, sa_column=Column(JSON))
 
 
 class Student(StudentBase, table=True):
     id: Optional[int] = Field(default=None, primary_key=True)
-    lessons: list['Lesson'] = Relationship(back_populates='student')
+    lessons: List['Lesson'] = Relationship(back_populates='student')
 
     @property
     def lessons_completed(self) -> int:
