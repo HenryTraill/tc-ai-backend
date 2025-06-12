@@ -1,5 +1,6 @@
 from .client import Client, ClientCreate, ClientRead, ClientUpdate
-from .lesson import Lesson, LessonCreate, LessonRead, LessonUpdate
+from .company import Company, CompanyCreate, CompanyRead, CompanyUpdate
+from .lesson import Lesson, LessonCreate, LessonRead, LessonStatus, LessonUpdate
 from .student import Student, StudentCreate, StudentRead, StudentUpdate
 
 __all__ = [
@@ -7,6 +8,10 @@ __all__ = [
     'ClientCreate',
     'ClientUpdate',
     'ClientRead',
+    'Company',
+    'CompanyCreate',
+    'CompanyUpdate',
+    'CompanyRead',
     'Student',
     'StudentCreate',
     'StudentUpdate',
@@ -15,4 +20,5 @@ __all__ = [
     'LessonCreate',
     'LessonUpdate',
     'LessonRead',
+    'LessonStatus',
 ]

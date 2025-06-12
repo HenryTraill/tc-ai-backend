@@ -43,7 +43,7 @@ async def lifespan(app: FastAPI):
 
 
 app = FastAPI(
-    title='TutorCruncher AI API',
+    title='TutorCruncher AI Backend',
     description='Backend API for TutorCruncher AI tutoring management system',
     version='0.1.0',
     lifespan=lifespan,
@@ -66,8 +66,8 @@ app.include_router(lessons.router, prefix='/api')
 
 
 @app.get('/')
-async def root():
-    return {'message': 'TutorCruncher AI API', 'version': '0.1.0'}
+def read_root():
+    return {'message': 'TutorCruncher AI Backend is running'}
 
 
 @app.get('/health')

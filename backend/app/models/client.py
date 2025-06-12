@@ -15,6 +15,9 @@ class ClientBase(SQLModel):
     phone: str
     address: Optional[str] = None
     notes: Optional[str] = None
+    company_id: Optional[int] = Field(default=None, foreign_key='company.id')
+    tc_id: Optional[str] = None
+    tc_path: Optional[str] = None
 
 
 class Client(ClientBase, table=True):
@@ -36,6 +39,9 @@ class ClientUpdate(BaseModel):
     phone: Optional[str] = None
     address: Optional[str] = None
     notes: Optional[str] = None
+    tc_id: Optional[str] = None
+    tc_path: Optional[str] = None
+    # Note: company_id is intentionally excluded from updates
 
 
 class ClientRead(ClientBase):
