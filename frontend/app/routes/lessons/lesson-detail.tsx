@@ -5,6 +5,9 @@ import { studentsApi, lessonsApi, type Student, type Lesson } from "../../data/a
 import { Button } from "~/components/ui/Button";
 import { fullName } from "~/helpers/students";
 import { DeleteModal } from "~/components/DeleteModal";
+import { LessonForm } from "~/components/forms/lessons";
+import { useSlideOutPanel } from "~/providers/SlideOutPanelProvider";
+import { formatDate, formatTime, getDurationBetween } from "~/helpers/lessons";
 
 
 export function meta({ params }: Route.MetaArgs) {
@@ -16,10 +19,11 @@ export function meta({ params }: Route.MetaArgs) {
 
 export default function LessonDetail({ params }: Route.ComponentProps) {
   const [lesson, setLesson] = useState<Lesson | null>(null);
-  const [student, setStudent] = useState<Student | null>(null);
+  const [students, setStudents] = useState<Student[] | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
+  const { openPanel } = useSlideOutPanel();
   const lessonId = parseInt(params.lessonId, 10);
 
   useEffect(() => {
@@ -27,15 +31,16 @@ export default function LessonDetail({ params }: Route.ComponentProps) {
       try {
         setLoading(true);
         const lessonData = await lessonsApi.getById(lessonId);
-        const studentData = await studentsApi.getById(lessonData.student_id);
+        const studentData = await studentsApi.getAll();
         setLesson(lessonData);
-        setStudent(studentData);
+        setStudents(studentData);
       } catch (err) {
         setError(err instanceof Error ? err.message : 'Failed to fetch lesson data');
       } finally {
         setLoading(false);
       }
     }
+
 
     if (!isNaN(lessonId)) {
       fetchData();
@@ -44,6 +49,9 @@ export default function LessonDetail({ params }: Route.ComponentProps) {
       setLoading(false);
     }
   }, [lessonId]);
+
+  const student = students?.find(s => s.id === lesson?.student_id);
+
 
   if (loading) {
     return (
@@ -74,15 +82,7 @@ export default function LessonDetail({ params }: Route.ComponentProps) {
     );
   }
 
-  const formatDate = (dateString: string) => {
-    const date = new Date(dateString);
-    return date.toLocaleDateString('en-US', {
-      weekday: 'long',
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric'
-    });
-  };
+
 
   return (
     <div className="p-8 min-h-full bg-cream">
@@ -96,11 +96,18 @@ export default function LessonDetail({ params }: Route.ComponentProps) {
             Back to Lessons
           </Link>
           <div className="flex gap-2">
+
             <Button
-              variant="primary"
-              href={`/lessons/${lesson.id}/edit`}
+              onClick={() =>
+                openPanel({
+                  title: "Add New Lesson",
+                  content: <LessonForm students={students!} lesson={lesson!} />,
+                })
+              }
               icon="pencil"
-            > Edit</Button>
+            >
+              Edit
+            </Button>
             <DeleteModal
               onConfirm={() => lessonsApi.delete(lesson.id)}
               resourceName="lesson"
@@ -126,10 +133,6 @@ export default function LessonDetail({ params }: Route.ComponentProps) {
                   </Link>
                 </div>
               </div>
-              <div className="text-right">
-                <div className="text-sm text-slate-600 mb-1">Duration</div>
-                <div className="text-2xl font-bold text-slate-800">{lesson.duration} min</div>
-              </div>
             </div>
           </div>
 
@@ -138,15 +141,15 @@ export default function LessonDetail({ params }: Route.ComponentProps) {
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
               <div>
                 <h3 className="text-sm font-medium text-slate-600 mb-2">Date</h3>
-                <p className="text-slate-800 font-medium">{formatDate(lesson.date)}</p>
+                <p className="text-slate-800 font-medium">{formatDate(lesson.start_dt)}</p>
               </div>
               <div>
                 <h3 className="text-sm font-medium text-slate-600 mb-2">Start Time</h3>
-                <p className="text-slate-800 font-medium">{lesson.start_time}</p>
+                <p className="text-slate-800 font-medium">{formatTime(lesson.start_dt)}</p>
               </div>
               <div>
                 <h3 className="text-sm font-medium text-slate-600 mb-2">Duration</h3>
-                <p className="text-slate-800 font-medium">{lesson.duration} minutes</p>
+                <p className="text-slate-800 font-medium">{getDurationBetween(lesson.start_dt, lesson.end_dt)}</p>
               </div>
             </div>
 

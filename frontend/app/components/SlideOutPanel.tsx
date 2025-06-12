@@ -1,4 +1,3 @@
-import { useNavigate } from "react-router";
 import React, { useEffect, useState } from "react";
 
 type SlideOutPanelProps = {
@@ -10,7 +9,7 @@ type SlideOutPanelProps = {
 
 export const SlideOutPanelFooter = ({ children }: { children: React.ReactElement }) => {
   return (
-    <div className="flex justify-end p-4 border-t mt-auto">
+    <div className="flex justify-end p-4 border-t mt-auto bg-cream">
       {children}
     </div>
   );
@@ -48,7 +47,7 @@ export const SlideOutPanel = ({
       />
 
       <div
-        className={`absolute top-0 right-0 h-full w-full max-w-md bg-white shadow-xl transition-transform duration-300 ease-in-out ${isOpen ? "translate-x-0" : "translate-x-full"
+        className={`absolute top-0 right-0 h-full w-full max-w-md shadow-xl transition-transform duration-300 ease-in-out bg-cream ${isOpen ? "translate-x-0" : "translate-x-full"
           }`}
       >
         <div className="flex justify-between items-center px-4 py-3 border-b">
@@ -62,7 +61,7 @@ export const SlideOutPanel = ({
           </button>
         </div>
 
-        <div className="overflow-y-auto max-h-[calc(100vh-140px)]">
+        <div className="overflow-y-auto bg-white">
           {shouldRender ? children : null}
         </div>
       </div>

@@ -29,19 +29,21 @@ export interface StudentUpdate {
 export interface Lesson {
     id: number;
     student_id: number;
-    date: string;
-    start_time: string;
+    company_id: number | null;
+    tc_path: string | null;
+    start_dt: string;
+    end_dt: string;
     subject: string;
     topic: string;
-    duration: number;
     notes: string;
+    status: 'planned' | 'complete' | 'pending' | 'cancelled' | 'cancelled-but-chargeable'
     skills_practiced: string[];
     main_subjects_covered: string[];
     student_strengths_observed: string[];
     student_weaknesses_observed: string[];
     tutor_tips: string[];
     created_at: string;
-    updated_at?: string;
+    updated_at: string | null;
 }
 
 export interface LessonCreate {

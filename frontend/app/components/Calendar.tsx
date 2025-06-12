@@ -1,5 +1,7 @@
 import { useState } from 'react';
 import { Link } from 'react-router';
+import type { Lesson } from '~/data/api';
+import { formatTime } from '~/helpers/lessons';
 
 const dateUtils = {
   startOfMonth: (date) => {
@@ -63,8 +65,8 @@ const dateUtils = {
 };
 
 const lessonUtils = {
-  getLessonsForDay: (lessons, date) => {
-    return lessons.filter(lesson => dateUtils.isSameDay(new Date(lesson.date), date));
+  getLessonsForDay: (lessons: Lesson[], date: Date) => {
+    return lessons.filter(lesson => dateUtils.isSameDay(new Date(lesson.start_dt), date));
   },
 
   getTypeColor: (type) => {
@@ -86,7 +88,7 @@ const lessonUtils = {
   }
 };
 
-const LessonCard = ({ lesson, size = 'small', showDate = false }) => {
+const LessonCard = ({ lesson, size = 'small', showDate = false }: { lesson: Lesson, size: string, showDate: boolean }) => {
   const sizeClasses = {
     small: 'text-xs p-1',
     medium: 'text-sm p-2',
@@ -106,7 +108,7 @@ const LessonCard = ({ lesson, size = 'small', showDate = false }) => {
 
       <div className="flex items-center gap-1 mt-1 text-xs">
         <i className="fas fa-clock"></i>
-        <span>{lesson.start_time}</span>
+        <span>{formatTime(lesson.start_dt)}</span>
       </div>
     </Link>
   );
@@ -299,7 +301,7 @@ const DayView = ({ currentDate, lessons }) => {
   );
 };
 
-const Calendar = ({ lessons }) => {
+const Calendar = ({ lessons }: { lessons: Lesson[] }) => {
   const [currentDate, setCurrentDate] = useState(new Date());
   const [view, setView] = useState('month');
 

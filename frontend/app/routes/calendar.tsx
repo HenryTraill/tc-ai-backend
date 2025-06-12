@@ -3,6 +3,7 @@ import { useState, useEffect } from "react";
 import { studentsApi, lessonsApi, type Student, type Lesson } from "../data/api";
 import Calendar from "~/components/Calendar";
 import { fullName } from "~/helpers/students";
+import type { LessonWithStudent } from "~/types/lessons";
 
 export function meta({ }: Route.MetaArgs) {
   return [
@@ -13,7 +14,7 @@ export function meta({ }: Route.MetaArgs) {
 
 export default function CalendarPage() {
   const [lessons, setLessons] = useState<Lesson[]>([]);
-  const [students, setStudents] = useState<Student[]>([]);
+  const [students, setStudents] = useState<Student[]>();
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -37,7 +38,7 @@ export default function CalendarPage() {
     fetchData();
   }, []);
 
-  if (loading) {
+  if (loading || !students.length) {
     return (
       <div className="p-8 min-h-full bg-gray-50 flex items-center justify-center">
         <div className="text-center">

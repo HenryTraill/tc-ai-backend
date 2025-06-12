@@ -2,6 +2,7 @@ import {
   createContext,
   useContext,
   useState,
+  useEffect,
   type ReactNode,
 } from "react";
 import { SlideOutPanel } from "~/components/SlideOutPanel";
@@ -31,16 +32,32 @@ export const SlideOutProvider = ({ children }: { children: ReactNode }) => {
   const [isOpen, setOpen] = useState(false);
   const [title, setTitle] = useState("");
   const [content, setContent] = useState<ReactNode>(null);
-  const [onConfirm, setOnConfirm] = useState<(() => Promise<void>) | undefined>();
 
-  const openPanel = ({ title, content, onConfirm }: SlideOutOptions) => {
+  const openPanel = ({ title, content }: SlideOutOptions) => {
     setTitle(title);
     setContent(content);
-    setOnConfirm(() => onConfirm);
     setOpen(true);
   };
 
   const closePanel = () => setOpen(false);
+
+  useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        closePanel();
+      }
+    };
+
+    if (isOpen) {
+      window.addEventListener("keydown", handleKeyDown);
+    } else {
+      window.removeEventListener("keydown", handleKeyDown);
+    }
+
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [isOpen]);
 
   return (
     <SlideOutContext.Provider value={{ openPanel, closePanel }}>
@@ -49,7 +66,6 @@ export const SlideOutProvider = ({ children }: { children: ReactNode }) => {
         title={title}
         isOpen={isOpen}
         onClose={closePanel}
-        onConfirm={onConfirm}
       >
         {content}
       </SlideOutPanel>

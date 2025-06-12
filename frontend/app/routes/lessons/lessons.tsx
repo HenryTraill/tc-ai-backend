@@ -5,6 +5,8 @@ import { useState, useEffect } from "react";
 import { studentsApi, lessonsApi, type Student, type Lesson } from "../../data/api";
 import { Button } from "~/components/ui/Button";
 import { fullName } from "~/helpers/students";
+import { useSlideOutPanel } from "~/providers/SlideOutPanelProvider";
+import { LessonForm } from "~/components/forms/lessons";
 
 export function meta({ }: Route.MetaArgs) {
   return [
@@ -22,6 +24,8 @@ export default function Lessons() {
   const [students, setStudents] = useState<Student[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+
+  const { openPanel } = useSlideOutPanel();
 
   useEffect(() => {
     async function fetchData() {
@@ -85,7 +89,12 @@ export default function Lessons() {
     new Date(b.date).getTime() - new Date(a.date).getTime()
   );
 
-  const totalDuration = lessons.reduce((sum, lesson) => sum + lesson.duration, 0);
+  const totalDuration = lessons.reduce((sum, lesson) => {
+    const start = new Date(lesson.start_dt);
+    const end = new Date(lesson.end_dt);
+    const durationMinutes = (end.getTime() - start.getTime()) / (1000 * 60);
+    return sum + durationMinutes;
+  }, 0);
   const averageDuration = lessons.length > 0 ? Math.round(totalDuration / lessons.length) : 0;
 
   const subjectStats = lessons.reduce((stats, lesson) => {
@@ -101,7 +110,17 @@ export default function Lessons() {
             <h1 className="text-4xl font-bold text-slate-800 mb-2">Lessons ({lessons.length})</h1>
             <p className="text-slate-600 text-lg">All tutoring sessions and lesson details</p>
           </div>
-          <Button href="/lessons/new" icon="plus">Add Lesson</Button>
+          <Button
+            onClick={() =>
+              openPanel({
+                title: "Add New Lesson",
+                content: <LessonForm students={students} />,
+              })
+            }
+            icon="plus"
+          >
+            Add Lesson
+          </Button>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
