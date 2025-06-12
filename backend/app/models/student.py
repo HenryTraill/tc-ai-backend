@@ -16,6 +16,8 @@ class StudentBase(SQLModel):
     email: EmailStr
     phone: str
     grade: str
+    company_id: Optional[int] = Field(default=None)
+    tc_path: Optional[str] = None
     strengths: List[str] = Field(default_factory=list, sa_column=Column(JSON))
     weaknesses: List[str] = Field(default_factory=list, sa_column=Column(JSON))
 
@@ -47,3 +49,5 @@ class StudentUpdate(BaseModel):
 class StudentRead(StudentBase):
     id: int
     lessons_completed: int
+    company_name: Optional[str] = None
+    tutorcruncher_url: Optional[str] = None

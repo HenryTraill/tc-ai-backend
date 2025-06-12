@@ -1,4 +1,5 @@
 from datetime import datetime, timezone
+from enum import Enum
 from typing import TYPE_CHECKING, List, Optional
 
 from pydantic import BaseModel
@@ -9,14 +10,27 @@ if TYPE_CHECKING:
     from backend.app.models.student import Student
 
 
+class LessonStatus(str, Enum):
+    """Status of a lesson"""
+
+    PLANNED = 'planned'
+    COMPLETE = 'complete'
+    PENDING = 'pending'
+    CANCELLED = 'cancelled'
+    CANCELLED_BUT_CHARGEABLE = 'cancelled-but-chargeable'
+
+
 class LessonBase(SQLModel):
     student_id: int = Field(foreign_key='student.id')
+    company_id: Optional[int] = Field(default=None)
+    tc_path: Optional[str] = None
     date: str
     start_time: str
     subject: str
     topic: str
     duration: int  # in minutes
     notes: str
+    status: LessonStatus = Field(default=LessonStatus.PLANNED)
     skills_practiced: List[str] = Field(default_factory=list, sa_column=Column(JSON))
     main_subjects_covered: List[str] = Field(default_factory=list, sa_column=Column(JSON))
     student_strengths_observed: List[str] = Field(default_factory=list, sa_column=Column(JSON))
@@ -38,12 +52,15 @@ class LessonCreate(LessonBase):
 
 class LessonUpdate(BaseModel):
     student_id: Optional[int] = None
+    company_id: Optional[int] = None
+    tc_path: Optional[str] = None
     date: Optional[str] = None
     start_time: Optional[str] = None
     subject: Optional[str] = None
     topic: Optional[str] = None
     duration: Optional[int] = None
     notes: Optional[str] = None
+    status: Optional[LessonStatus] = None
     # Note: skills_practiced, main_subjects_covered, student_strengths_observed,
     # student_weaknesses_observed, and tutor_tips are intentionally excluded from updates
 
@@ -52,3 +69,5 @@ class LessonRead(LessonBase):
     id: int
     created_at: datetime
     updated_at: Optional[datetime] = None
+    company_name: Optional[str] = None
+    tutorcruncher_url: Optional[str] = None
