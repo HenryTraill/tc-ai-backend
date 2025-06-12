@@ -9,7 +9,7 @@ type SlideOutPanelProps = {
 
 export const SlideOutPanelFooter = ({ children }: { children: React.ReactElement }) => {
   return (
-    <div className="flex justify-end p-4 border-t mt-auto bg-cream">
+    <div className="flex sticky bottom-0 justify-end p-4 border-t mt-auto bg-cream">
       {children}
     </div>
   );
@@ -61,7 +61,7 @@ export const SlideOutPanel = ({
           </button>
         </div>
 
-        <div className="overflow-y-auto bg-white">
+        <div className="overflow-scroll max-h-[calc(100vh-54px)] bg-white">
           {shouldRender ? children : null}
         </div>
       </div>

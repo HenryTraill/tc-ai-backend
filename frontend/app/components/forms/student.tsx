@@ -81,7 +81,7 @@ export const StudentForm = ({ student }: StudentFormProps) => {
                   required: true,
                   valueAsNumber: true, // 💡 This tells react-hook-form to treat the value as a number
                 })}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2"
+
               >
                 <option value="">Select a Client</option>
                 {clients.map((client) => (
@@ -93,23 +93,23 @@ export const StudentForm = ({ student }: StudentFormProps) => {
             </div>
             <div>
               <label className="text-sm font-medium text-slate-700 mb-1 block">First Name</label>
-              <input type="text" {...register("first_name")} required className="w-full px-3 py-2 border rounded-lg focus:ring-2" />
+              <input type="text" {...register("first_name")} required />
             </div>
             <div>
               <label className="text-sm font-medium text-slate-700 mb-1 block">Last Name</label>
-              <input type="text" {...register("last_name")} required className="w-full px-3 py-2 border rounded-lg focus:ring-2" />
+              <input type="text" {...register("last_name")} required />
             </div>
             <div>
               <label className="text-sm font-medium text-slate-700 mb-1 block">Email</label>
-              <input type="email" {...register("email")} required className="w-full px-3 py-2 border rounded-lg focus:ring-2" />
+              <input type="email" {...register("email")} required />
             </div>
             <div>
               <label className="text-sm font-medium text-slate-700 mb-1 block">Phone</label>
-              <input type="tel" {...register("phone")} required className="w-full px-3 py-2 border rounded-lg focus:ring-2" />
+              <input type="tel" {...register("phone")} required />
             </div>
             <div>
               <label className="text-sm font-medium text-slate-700 mb-1 block">Grade</label>
-              <input type="text" {...register("grade")} required className="w-full px-3 py-2 border rounded-lg focus:ring-2" />
+              <input type="text" {...register("grade")} required />
             </div>
           </div>
         </div>

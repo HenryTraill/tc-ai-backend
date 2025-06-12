@@ -91,7 +91,7 @@ export const LessonForm = ({ students, lesson }: LessonFormProps) => {
             <select
               {...register("student_id")}
               required
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2"
+
             >
               <option value="">Select a student</option>
               {students.map((student) => (
@@ -108,28 +108,30 @@ export const LessonForm = ({ students, lesson }: LessonFormProps) => {
               type="date"
               {...register("date")}
               required
-              className="w-full px-3 py-2 border rounded-lg focus:ring-2"
+
             />
           </div>
 
-          <div>
-            <label className="text-sm font-medium text-slate-700 mb-1 block">Start Time</label>
-            <input
-              type="time"
-              {...register("start_time")}
-              required
-              className="w-full px-3 py-2 border rounded-lg focus:ring-2"
-            />
-          </div>
+          <div className="grid grid-cols-2 gap-4">
+            <div>
+              <label className="text-sm font-medium text-slate-700 mb-1 block">Start Time</label>
+              <input
+                type="time"
+                {...register("start_time")}
+                required
 
-          <div>
-            <label className="text-sm font-medium text-slate-700 mb-1 block">End Time</label>
-            <input
-              type="time"
-              {...register("end_time")}
-              required
-              className="w-full px-3 py-2 border rounded-lg focus:ring-2"
-            />
+              />
+            </div>
+
+            <div>
+              <label className="text-sm font-medium text-slate-700 mb-1 block">End Time</label>
+              <input
+                type="time"
+                {...register("end_time")}
+                required
+
+              />
+            </div>
           </div>
 
           <div>
@@ -138,7 +140,7 @@ export const LessonForm = ({ students, lesson }: LessonFormProps) => {
               type="text"
               {...register("subject")}
               required
-              className="w-full px-3 py-2 border rounded-lg focus:ring-2"
+
             />
           </div>
 
@@ -147,7 +149,7 @@ export const LessonForm = ({ students, lesson }: LessonFormProps) => {
             <select
               {...register("status")}
               required
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2"
+
             >
               <option value="planned">Planned</option>
               <option value="pending">Pending</option>
@@ -163,7 +165,7 @@ export const LessonForm = ({ students, lesson }: LessonFormProps) => {
               type="text"
               {...register("topic")}
               required
-              className="w-full px-3 py-2 border rounded-lg focus:ring-2"
+
             />
           </div>
 
@@ -172,7 +174,7 @@ export const LessonForm = ({ students, lesson }: LessonFormProps) => {
             <textarea
               {...register("notes")}
               rows={4}
-              className="w-full px-3 py-2 border rounded-lg focus:ring-2"
+
             />
           </div>
         </div>

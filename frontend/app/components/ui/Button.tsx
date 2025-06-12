@@ -25,7 +25,7 @@ export const Button = ({
 
   switch (variant) {
     case "primary":
-      styles = "bg-steel-blue text-white hover:bg-blue-700";
+      styles = "bg-steel-blue text-white hover:bg-navy-blue";
       break;
     case "warning":
       styles = "bg-red-700 text-white hover:bg-red-600";

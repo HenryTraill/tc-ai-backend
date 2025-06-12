@@ -173,7 +173,7 @@ export default function Lessons() {
                 </svg>
               </div>
             </div>
-            <div className="max-h-32 overflow-y-auto">
+            <div className="max-h-24 overflow-y-auto pb-4">
               {Object.entries(subjectStats)
                 .sort(([, a], [, b]) => b - a)
                 .map(([subject, count]) => (
@@ -190,6 +190,7 @@ export default function Lessons() {
                   </div>
                 ))}
             </div>
+            <div className="-mt-2 h-2 blur bg-white" />
             {Object.keys(subjectStats).length > 4 && (
               <div className="mt-3 pt-3 border-t border-purple-200">
                 <p className="text-xs text-purple-600 font-medium">

@@ -30,3 +30,12 @@ body {
 .shadow-sm{
   box-shadow: 0;
 }
+
+input, select, textarea{
+  padding: 10px 8px;
+  min-height: 46px;
+  border: 1px solid var(--color-dark-blue);
+  background-color: var(--color-grey);
+  border-radius: 8px;
+  width: 100%;
+}
