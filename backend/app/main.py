@@ -65,12 +65,12 @@ app.include_router(students.router, prefix='/api')
 app.include_router(lessons.router, prefix='/api')
 
 
-@app.get('/')
-def read_root():
-    return {'message': 'TutorCruncher AI Backend is running'}
+@app.get('/', name='root')
+async def root():
+    return {'message': 'TutorCruncher AI API', 'version': '0.1.0'}
 
 
-@app.get('/health')
+@app.get('/health', name='health_check')
 async def health_check():
     return {'status': 'healthy'}
 

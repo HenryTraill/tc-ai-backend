@@ -35,7 +35,7 @@ def get_lessons(
     return [build_lesson_read(lesson, company) for lesson, company in results]
 
 
-@router.get('/{lesson_id}', response_model=LessonRead)
+@router.get('/{lesson_id}', response_model=LessonRead, name='get_lesson')
 def get_lesson(lesson_id: int, session: Session = Depends(get_session)):
     """Get a specific lesson by ID"""
     query = select(Lesson, Company).outerjoin(Company, Lesson.company_id == Company.id).where(Lesson.id == lesson_id)
@@ -48,7 +48,7 @@ def get_lesson(lesson_id: int, session: Session = Depends(get_session)):
     return build_lesson_read(lesson, company)
 
 
-@router.post('/', response_model=LessonRead)
+@router.post('/', response_model=LessonRead, name='create_lesson')
 def create_lesson(lesson_data: LessonCreate, session: Session = Depends(get_session)):
     """Create a new lesson"""
     # Check if student exists
@@ -69,7 +69,7 @@ def create_lesson(lesson_data: LessonCreate, session: Session = Depends(get_sess
     return build_lesson_read(lesson, company)
 
 
-@router.put('/{lesson_id}', response_model=LessonRead)
+@router.put('/{lesson_id}', response_model=LessonRead, name='update_lesson')
 def update_lesson(lesson_id: int, lesson_data: LessonUpdate, session: Session = Depends(get_session)):
     """Update a lesson (only basic fields can be updated)"""
     lesson = session.get(Lesson, lesson_id)
@@ -106,7 +106,7 @@ def update_lesson(lesson_id: int, lesson_data: LessonUpdate, session: Session = 
     return build_lesson_read(lesson, company)
 
 
-@router.delete('/{lesson_id}')
+@router.delete('/{lesson_id}', name='delete_lesson')
 def delete_lesson(lesson_id: int, session: Session = Depends(get_session)):
     """Delete a lesson"""
     lesson = session.get(Lesson, lesson_id)
@@ -125,7 +125,7 @@ def delete_lesson(lesson_id: int, session: Session = Depends(get_session)):
     return {'message': 'Lesson deleted successfully'}
 
 
-@router.get('/student/{student_id}', response_model=List[LessonRead])
+@router.get('/student/{student_id}', response_model=List[LessonRead], name='get_lessons_for_student')
 def get_lessons_for_student(student_id: int, session: Session = Depends(get_session)):
     """Get all lessons for a specific student"""
     # Check if student exists

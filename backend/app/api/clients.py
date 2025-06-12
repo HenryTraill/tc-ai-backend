@@ -9,14 +9,14 @@ from ..models.client import Client, ClientCreate, ClientRead, ClientUpdate
 router = APIRouter(prefix='/clients', tags=['clients'])
 
 
-@router.get('/', response_model=list[ClientRead])
+@router.get('/', response_model=list[ClientRead], name='get_clients')
 def get_clients(session: Session = Depends(get_session)):
     """Get all clients"""
     clients = session.exec(select(Client)).all()
     return clients
 
 
-@router.get('/{client_id}', response_model=ClientRead)
+@router.get('/{client_id}', response_model=ClientRead, name='get_client')
 def get_client(client_id: int, session: Session = Depends(get_session)):
     """Get a specific client by ID"""
     client = session.get(Client, client_id)
@@ -25,7 +25,7 @@ def get_client(client_id: int, session: Session = Depends(get_session)):
     return client
 
 
-@router.post('/', response_model=ClientRead)
+@router.post('/', response_model=ClientRead, name='create_client')
 def create_client(client_data: ClientCreate, session: Session = Depends(get_session)):
     """Create a new client"""
     client = Client(**client_data.model_dump())
@@ -35,7 +35,7 @@ def create_client(client_data: ClientCreate, session: Session = Depends(get_sess
     return client
 
 
-@router.put('/{client_id}', response_model=ClientRead)
+@router.put('/{client_id}', response_model=ClientRead, name='update_client')
 def update_client(client_id: int, client_data: ClientUpdate, session: Session = Depends(get_session)):
     """Update a client"""
     client = session.get(Client, client_id)
@@ -53,7 +53,7 @@ def update_client(client_id: int, client_data: ClientUpdate, session: Session = 
     return client
 
 
-@router.delete('/{client_id}')
+@router.delete('/{client_id}', name='delete_client')
 def delete_client(client_id: int, session: Session = Depends(get_session)):
     """Delete a client"""
     client = session.get(Client, client_id)

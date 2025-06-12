@@ -32,7 +32,7 @@ def get_students(session: Session = Depends(get_session)):
     return [build_student_read(student, company) for student, company in results]
 
 
-@router.get('/{student_id}', response_model=StudentRead)
+@router.get('/{student_id}', response_model=StudentRead, name='get_student')
 def get_student(student_id: int, session: Session = Depends(get_session)):
     """Get a specific student by ID"""
     query = (
@@ -47,7 +47,7 @@ def get_student(student_id: int, session: Session = Depends(get_session)):
     return build_student_read(student, company)
 
 
-@router.post('/', response_model=StudentRead)
+@router.post('/', response_model=StudentRead, name='create_student')
 def create_student(student_data: StudentCreate, session: Session = Depends(get_session)):
     """Create a new student"""
     # Check if client exists
@@ -68,7 +68,7 @@ def create_student(student_data: StudentCreate, session: Session = Depends(get_s
     return build_student_read(student, company)
 
 
-@router.put('/{student_id}', response_model=StudentRead)
+@router.put('/{student_id}', response_model=StudentRead, name='update_student')
 def update_student(student_id: int, student_data: StudentUpdate, session: Session = Depends(get_session)):
     """Update a student"""
     student = session.get(Student, student_id)
@@ -98,7 +98,7 @@ def update_student(student_id: int, student_data: StudentUpdate, session: Sessio
     return build_student_read(student, company)
 
 
-@router.delete('/{student_id}')
+@router.delete('/{student_id}', name='delete_student')
 def delete_student(student_id: int, session: Session = Depends(get_session)):
     """Delete a student"""
     student = session.get(Student, student_id)

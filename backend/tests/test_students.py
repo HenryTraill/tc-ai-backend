@@ -23,7 +23,7 @@ def test_create_student(client: TestClient, session: Session):
         'strengths': ['Math', 'Science'],
         'weaknesses': ['Writing', 'History'],
     }
-    response = client.post('/api/students/', json=student_data)
+    response = client.post(client.app.url_path_for('create_student'), json=student_data)
     assert response.status_code == 200
     data = response.json()
     assert data['client_id'] == test_client.id
@@ -45,7 +45,7 @@ def test_create_student_invalid_client_id(client: TestClient):
         'phone': '+1111111111',
         'grade': '9th Grade',
     }
-    response = client.post('/api/students/', json=student_data)
+    response = client.post(client.app.url_path_for('create_student'), json=student_data)
     # Should return 404 when client doesn't exist
     assert response.status_code == 404
     assert 'Client not found' in response.json()['detail']
@@ -73,7 +73,7 @@ def test_get_students(client: TestClient, session: Session):
     session.add(student)
     session.commit()
 
-    response = client.get('/api/students/')
+    response = client.get(client.app.url_path_for('get_students'))
     assert response.status_code == 200
     data = response.json()
     assert len(data) == 1
@@ -104,7 +104,7 @@ def test_get_student_by_id(client: TestClient, session: Session):
     session.commit()
     session.refresh(student)
 
-    response = client.get(f'/api/students/{student.id}')
+    response = client.get(client.app.url_path_for('get_student', student_id=student.id))
     assert response.status_code == 200
     data = response.json()
     assert data['first_name'] == 'Alice'
@@ -114,7 +114,7 @@ def test_get_student_by_id(client: TestClient, session: Session):
 
 def test_get_nonexistent_student(client: TestClient):
     """Test getting a non-existent student"""
-    response = client.get('/api/students/999')
+    response = client.get(client.app.url_path_for('get_student', student_id=999))
     assert response.status_code == 404
 
 
@@ -143,7 +143,7 @@ def test_update_student(client: TestClient, session: Session):
 
     # Update student
     update_data = {'first_name': 'Alicia', 'grade': '11th Grade', 'email': 'alicia.smith@example.com'}
-    response = client.put(f'/api/students/{student.id}', json=update_data)
+    response = client.put(client.app.url_path_for('update_student', student_id=student.id), json=update_data)
     assert response.status_code == 200
     data = response.json()
     assert data['first_name'] == 'Alicia'
@@ -181,7 +181,7 @@ def test_update_student_strengths_weaknesses_ignored(client: TestClient, session
         'strengths': ['Science', 'Physics'],  # Should be ignored
         'weaknesses': ['History'],  # Should be ignored
     }
-    response = client.put(f'/api/students/{student.id}', json=update_data)
+    response = client.put(client.app.url_path_for('update_student', student_id=student.id), json=update_data)
     assert response.status_code == 200
     data = response.json()
     assert data['first_name'] == 'Alicia'  # Should be updated
@@ -204,17 +204,18 @@ def test_delete_student(client: TestClient, session: Session):
         last_name='Smith',
         email='alice.smith@example.com',
         phone='+1111111111',
-        grade='10th Grade',
+        grade='12th Grade',
+        strengths=['Science'],
+        weaknesses=['Math'],
     )
     session.add(student)
     session.commit()
     session.refresh(student)
 
-    response = client.delete(f'/api/students/{student.id}')
+    response = client.delete(client.app.url_path_for('delete_student', student_id=student.id))
     assert response.status_code == 200
-    data = response.json()
-    assert data['message'] == 'Student deleted successfully'
+    assert response.json()['message'] == 'Student deleted successfully'
 
-    # Verify student is deleted
-    response = client.get(f'/api/students/{student.id}')
+    # Verify the student was deleted
+    response = client.get(client.app.url_path_for('get_student', student_id=student.id))
     assert response.status_code == 404

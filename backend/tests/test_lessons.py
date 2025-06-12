@@ -41,7 +41,7 @@ def test_create_lesson(client: TestClient, session: Session):
         'student_weaknesses_observed': ['Struggles with word problems'],
         'tutor_tips': ['Practice more word problems', 'Use visual aids'],
     }
-    response = client.post('/api/lessons/', json=lesson_data)
+    response = client.post(client.app.url_path_for('create_lesson'), json=lesson_data)
     assert response.status_code == 200
     data = response.json()
     assert data['student_id'] == student.id
@@ -106,7 +106,7 @@ def test_create_lesson_invalid_student_id(client: TestClient):
         'duration': 60,
         'notes': 'Test lesson',
     }
-    response = client.post('/api/lessons/', json=lesson_data)
+    response = client.post(client.app.url_path_for('create_lesson'), json=lesson_data)
     # Should return 404 when student doesn't exist
     assert response.status_code == 404
     assert 'Student not found' in response.json()['detail']
@@ -146,7 +146,7 @@ def test_get_lessons(client: TestClient, session: Session):
     session.add(lesson)
     session.commit()
 
-    response = client.get('/api/lessons/')
+    response = client.get(client.app.url_path_for('get_lessons'))
     assert response.status_code == 200
     data = response.json()
     assert len(data) == 1
@@ -310,7 +310,7 @@ def test_get_lesson_by_id(client: TestClient, session: Session):
     session.commit()
     session.refresh(lesson)
 
-    response = client.get(f'/api/lessons/{lesson.id}')
+    response = client.get(client.app.url_path_for('get_lesson', lesson_id=lesson.id))
     assert response.status_code == 200
     data = response.json()
     assert data['subject'] == 'Science'
@@ -321,7 +321,7 @@ def test_get_lesson_by_id(client: TestClient, session: Session):
 
 def test_get_nonexistent_lesson(client: TestClient):
     """Test getting a non-existent lesson"""
-    response = client.get('/api/lessons/999')
+    response = client.get(client.app.url_path_for('get_lesson', lesson_id=999))
     assert response.status_code == 404
 
 
@@ -361,21 +361,73 @@ def test_update_lesson(client: TestClient, session: Session):
     session.commit()
     session.refresh(lesson)
 
-    # Update lesson
+    # Update basic fields
+    update_data = {'subject': 'Physics', 'topic': 'Mechanics', 'duration': 90, 'notes': 'Updated notes'}
+    response = client.put(client.app.url_path_for('update_lesson', lesson_id=lesson.id), json=update_data)
+    assert response.status_code == 200
+    data = response.json()
+    assert data['subject'] == 'Physics'
+    assert data['topic'] == 'Mechanics'
+    assert data['duration'] == 90
+    assert data['notes'] == 'Updated notes'
+    assert data['date'] == '2024-01-17'
+
+
+def test_update_lesson_protected_fields_ignored(client: TestClient, session: Session):
+    """Test that protected fields cannot be updated through the API"""
+    # Create a test client
+    test_client = Client(first_name='John', last_name='Doe', email='john.doe@example.com', phone='+1234567890')
+    session.add(test_client)
+    session.commit()
+    session.refresh(test_client)
+
+    # Create a test student
+    student = Student(
+        client_id=test_client.id,
+        first_name='Alice',
+        last_name='Smith',
+        email='alice.smith@example.com',
+        phone='+1111111111',
+        grade='10th Grade',
+    )
+    session.add(student)
+    session.commit()
+    session.refresh(student)
+
+    # Create a test lesson
+    lesson = Lesson(
+        student_id=student.id,
+        date='2024-01-15',
+        start_time='14:00',
+        subject='Mathematics',
+        topic='Algebra',
+        duration=60,
+        notes='Original notes',
+        skills_practiced=['Basic algebra'],
+        main_subjects_covered=['Linear equations'],
+        student_strengths_observed=['Quick learner'],
+        student_weaknesses_observed=['Struggles with word problems'],
+        tutor_tips=['Practice more'],
+    )
+    session.add(lesson)
+    session.commit()
+    session.refresh(lesson)
+
+    # Try to update protected fields (should be ignored)
     update_data = {
         'subject': 'English Literature',
         'topic': 'Shakespeare',
         'notes': 'Updated notes',
         'duration': 60,
     }
-    response = client.put(f'/api/lessons/{lesson.id}', json=update_data)
+    response = client.put(client.app.url_path_for('update_lesson', lesson_id=lesson.id), json=update_data)
     assert response.status_code == 200
     data = response.json()
     assert data['subject'] == 'English Literature'
     assert data['topic'] == 'Shakespeare'
     assert data['notes'] == 'Updated notes'
     assert data['duration'] == 60
-    assert data['date'] == '2024-01-17'  # Should remain unchanged
+    assert data['date'] == '2024-01-15'  # Should remain unchanged
 
 
 def test_update_lesson_status_to_cancelled(client: TestClient, session: Session):
@@ -599,24 +651,24 @@ def test_delete_lesson(client: TestClient, session: Session):
     session.commit()
     session.refresh(lesson)
 
-    response = client.delete(f'/api/lessons/{lesson.id}')
+    response = client.delete(client.app.url_path_for('delete_lesson', lesson_id=lesson.id))
     assert response.status_code == 200
     data = response.json()
     assert data['message'] == 'Lesson deleted successfully'
 
     # Verify lesson is deleted
-    response = client.get(f'/api/lessons/{lesson.id}')
+    response = client.get(client.app.url_path_for('get_lesson', lesson_id=lesson.id))
     assert response.status_code == 404
 
 
 def test_delete_nonexistent_lesson(client: TestClient):
     """Test deleting a non-existent lesson"""
-    response = client.delete('/api/lessons/999')
+    response = client.delete(client.app.url_path_for('delete_lesson', lesson_id=999))
     assert response.status_code == 404
 
 
-def test_lesson_status_enum(client: TestClient, session: Session):
-    """Test creating lessons with different status values"""
+def test_get_lessons_for_student(client: TestClient, session: Session):
+    """Test getting all lessons for a specific student"""
     # Create a test client
     test_client = Client(first_name='John', last_name='Doe', email='john.doe@example.com', phone='+1234567890')
     session.add(test_client)
@@ -636,7 +688,61 @@ def test_lesson_status_enum(client: TestClient, session: Session):
     session.commit()
     session.refresh(student)
 
+    # Create lessons for this student
+    lesson1 = Lesson(
+        student_id=student.id,
+        date='2024-01-15',
+        start_time='14:00',
+        subject='Mathematics',
+        topic='Algebra',
+        duration=60,
+        notes='Math lesson',
+    )
+    lesson2 = Lesson(
+        student_id=student.id,
+        date='2024-01-16',
+        start_time='15:00',
+        subject='Physics',
+        topic='Mechanics',
+        duration=90,
+        notes='Physics lesson',
+    )
+    session.add(lesson1)
+    session.add(lesson2)
+    session.commit()
+
+    response = client.get(client.app.url_path_for('get_lessons_for_student', student_id=student.id))
+    assert response.status_code == 200
+    data = response.json()
+    assert len(data) == 2
+    subjects = [lesson['subject'] for lesson in data]
+    assert 'Mathematics' in subjects
+    assert 'Physics' in subjects
+    # Verify all lessons belong to the correct student
+    for lesson in data:
+        assert lesson['student_id'] == student.id
+
+
+def test_lesson_status_enum(client: TestClient, session: Session):
+    """Test creating lessons with different status values"""
     # Test different status values
+    test_client = Client(first_name='John', last_name='Doe', email='john.doe@example.com', phone='+1234567890')
+    session.add(test_client)
+    session.commit()
+    session.refresh(test_client)
+
+    # Create a test student
+    student = Student(
+        client_id=test_client.id,
+        first_name='Alice',
+        last_name='Smith',
+        email='alice.smith@example.com',
+        phone='+1111111111',
+        grade='7th Grade',
+    )
+    session.add(student)
+    session.commit()
+    session.refresh(student)
     statuses = ['planned', 'complete', 'pending', 'cancelled', 'cancelled-but-chargeable']
 
     for status in statuses:
