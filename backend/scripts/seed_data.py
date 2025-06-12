@@ -294,13 +294,33 @@ def generate_lessons_for_student(student_id: int, student_name: str, grade: str,
             'Celebrate progress to build confidence',
         ]
 
+        # Generate start and end datetime objects
+        start_time_str = random.choice(time_slots)
+        duration_minutes = random.choice([45, 60, 75, 90])
+
+        # Parse the time string and create datetime objects
+        if 'AM' in start_time_str or 'PM' in start_time_str:
+            # Convert 12-hour format to 24-hour format
+            time_part = start_time_str.replace(' AM', '').replace(' PM', '')
+            hour, minute = map(int, time_part.split(':'))
+            if 'PM' in start_time_str and hour != 12:
+                hour += 12
+            elif 'AM' in start_time_str and hour == 12:
+                hour = 0
+        else:
+            # Assume 24-hour format
+            hour, minute = map(int, start_time_str.split(':'))
+
+        # Create start_dt and end_dt
+        start_dt = datetime.combine(lesson_date, datetime.min.time().replace(hour=hour, minute=minute))
+        end_dt = start_dt + timedelta(minutes=duration_minutes)
+
         lesson = {
             'student_id': student_id,
-            'date': lesson_date.strftime('%Y-%m-%d'),
-            'start_time': random.choice(time_slots),
+            'start_dt': start_dt,
+            'end_dt': end_dt,
             'subject': template['subject'],
             'topic': template['topic'],
-            'duration': random.choice([45, 60, 75, 90]),
             'notes': notes,
             'skills_practiced': template['skills_practiced'],
             'main_subjects_covered': template['main_subjects_covered'],
@@ -378,8 +398,8 @@ def seed_database():
         print(f'Created {len(clients_data)} clients, {len(students_data)} students and {len(all_lessons)} lessons')
 
         # Show breakdown of past vs future lessons
-        today = datetime.now().date()
-        past_lessons = sum(1 for lesson in all_lessons if datetime.strptime(lesson['date'], '%Y-%m-%d').date() < today)
+        now = datetime.now()
+        past_lessons = sum(1 for lesson in all_lessons if lesson['start_dt'] < now)
         future_lessons = len(all_lessons) - past_lessons
         print(f'  - {past_lessons} past lessons')
         print(f'  - {future_lessons} future lessons')
