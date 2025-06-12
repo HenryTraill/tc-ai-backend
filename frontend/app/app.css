@@ -21,10 +21,6 @@
 html,
 body {
   @apply bg-white dark:bg-gray-950;
-
-  @media (prefers-color-scheme: dark) {
-    color-scheme: dark;
-  }
 }
 
 .shadow-sm{
@@ -38,4 +34,5 @@ input, select, textarea{
   background-color: var(--color-grey);
   border-radius: 8px;
   width: 100%;
+  color: var(--color-navy-blue)
 }

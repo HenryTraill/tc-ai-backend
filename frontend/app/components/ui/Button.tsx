@@ -8,6 +8,7 @@ type ButtonProps = {
   variant?: "primary" | "warning" | "success" | "outline" | "ghost";
   type?: "button" | "submit" | "reset";
   disabled?: boolean;
+  loading?: boolean;
 };
 
 export const Button = ({
@@ -18,6 +19,7 @@ export const Button = ({
   children = "Click me",
   variant = "primary",
   type = "button",
+  loading = false,
 }: ButtonProps) => {
   const base =
     "inline-flex items-center px-4 py-2.5 rounded-lg font-medium transition-all";
@@ -73,7 +75,16 @@ export const Button = ({
       className={`${base} ${styles}`}
       disabled={disabled}
     >
-      {content}
+      {loading ? (
+        <span className="loader spinner-border animate-spin w-4 h-4 mr-2 border-2 border-white border-t-transparent rounded-full"></span>
+      ) : (
+        <>
+          {children}
+          {icon && (
+            <span className={`ml-2 fa fa-fw fa-${icon} text-sm`}></span>
+          )}
+        </>
+      )}
     </button>
   );
 };

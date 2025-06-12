@@ -116,7 +116,7 @@ export const StudentForm = ({ student }: StudentFormProps) => {
       </form>
       <SlideOutPanelFooter>
         <Button type="submit" disabled={isSubmitting} onClick={() => formRef?.current?.requestSubmit()}>
-          {isSubmitting ? (student ? "Saving changes..." : "Creating...") : (student ? "Update Student" : "Create Student")}
+          {student ? "Update Student" : "Create Student"}
         </Button>
       </SlideOutPanelFooter>
     </>

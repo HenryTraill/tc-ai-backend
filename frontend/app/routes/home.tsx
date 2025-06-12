@@ -5,6 +5,7 @@ import { useState, useEffect } from "react";
 import { studentsApi, lessonsApi, type Student, type Lesson } from "../data/api";
 import type { LessonWithStudent } from "~/types/lessons";
 import { fullName } from "~/helpers/students";
+import { StatsCard } from "~/components/StatsCard";
 
 export function meta({ }: Route.MetaArgs) {
   return [
@@ -93,21 +94,18 @@ export default function Home() {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-          <div className="bg-white border border-black rounded-2xl p-6 shadow-sm">
-            <h3 className="text-sm font-medium text-slate-600 mb-3">Total Students</h3>
-            <p className="text-3xl font-bold text-slate-800">{totalStudents}</p>
-            <p className="text-sm text-slate-500 mt-2">Active learners</p>
-          </div>
-          <div className="bg-white border border-black rounded-2xl p-6 shadow-sm">
-            <h3 className="text-sm font-medium text-slate-600 mb-3">Total Lessons</h3>
-            <p className="text-3xl font-bold text-slate-800">{totalLessons}</p>
-            <p className="text-sm text-slate-500 mt-2">Sessions completed</p>
-          </div>
-          <div className="bg-white border border-black rounded-2xl p-6 shadow-sm">
-            <h3 className="text-sm font-medium text-slate-600 mb-3">This Week</h3>
-            <p className="text-3xl font-bold text-slate-800">5</p>
-            <p className="text-sm text-slate-500 mt-2">Upcoming sessions</p>
-          </div>
+          <StatsCard title="Total Students" description="Active learners" value={totalStudents} trend={{
+            type: "up",
+            label: "In the last week"
+          }} />
+          <StatsCard title="Total Lessons" description="Sessions completed" value={totalLessons} trend={{
+            type: "up",
+            label: "In the last week"
+          }} />
+          <StatsCard title="This Week" description="Updcoming Sessions" value={5} trend={{
+            type: "down",
+            label: "In the last week"
+          }} />
         </div>
 
         <div className="bg-white border border-black rounded-2xl shadow-sm">

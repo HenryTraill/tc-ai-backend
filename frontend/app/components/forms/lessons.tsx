@@ -181,14 +181,10 @@ export const LessonForm = ({ students, lesson }: LessonFormProps) => {
       </div>
 
       <SlideOutPanelFooter>
-        <Button type="submit" disabled={isSubmitting} onClick={() => formRef?.current?.requestSubmit()}>
-          {isSubmitting
-            ? lesson
-              ? "Saving changes..."
-              : "Creating..."
-            : lesson
-              ? "Update Lesson"
-              : "Create Lesson"}
+        <Button type="submit" disabled={isSubmitting} loading={isSubmitting} onClick={() => formRef?.current?.requestSubmit()}>
+          {lesson
+            ? "Update Lesson"
+            : "Create Lesson"}
         </Button>
       </SlideOutPanelFooter>
     </form>

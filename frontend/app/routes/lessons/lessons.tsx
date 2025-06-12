@@ -6,6 +6,7 @@ import { fullName } from "~/helpers/students";
 import { useSlideOutPanel } from "~/providers/SlideOutPanelProvider";
 import { LessonForm } from "~/components/forms/lessons";
 import type { Route } from "./+types/lessons";
+import { StatsCard } from "~/components/StatsCard";
 
 export function meta({ }: Route.MetaArgs) {
   return [
@@ -123,46 +124,14 @@ export default function Lessons() {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-          <div className="group border bg-white rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
-            <div className="flex items-center justify-between mb-3">
-              <h3 className="text-sm font-semibold text-blue-700 uppercase tracking-wide">Total Hours</h3>
-              <div className="w-8 h-8 bg-blue-500 rounded-lg flex items-center justify-center">
-                <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>
-              </div>
-            </div>
-            <p className="text-4xl font-bold text-slate-800 mb-2 group-hover:text-blue-600 transition-colors">
-              {Math.round(totalDuration / 60 * 10) / 10}
-            </p>
-            <div className="flex items-center">
-              <p className="text-sm text-slate-600">Hours taught</p>
-              <div className="ml-auto flex items-center text-green-600 text-xs">
-                <svg className="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
-                </svg>
-                <span className="font-medium">Growing</span>
-              </div>
-            </div>
-          </div>
-
-          <div className="group border bg-white rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
-            <div className="flex items-center justify-between mb-3">
-              <h3 className="text-sm font-semibold text-emerald-700 uppercase tracking-wide">Avg Duration</h3>
-              <div className="w-8 h-8 bg-emerald-500 rounded-lg flex items-center justify-center">
-                <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
-                </svg>
-              </div>
-            </div>
-            <div className="flex items-baseline mb-2">
-              <p className="text-4xl font-bold text-slate-800 group-hover:text-emerald-600 transition-colors">
-                {averageDuration}
-              </p>
-              <span className="text-xl font-medium text-slate-500 ml-1">min</span>
-            </div>
-            <p className="text-sm text-slate-600">Per session</p>
-          </div>
+          <StatsCard title="Total Hours" description="Hours taught" value={Math.round(totalDuration / 60 * 10) / 10} trend={{
+            type: "up",
+            label: "In the last week"
+          }} />
+          <StatsCard title="Avg Duration" description="Mins per session" value={averageDuration} trend={{
+            type: "up",
+            label: "In the last week"
+          }} />
 
           <div className="group border bg-white rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
             <div className="flex items-center justify-between mb-4">
@@ -219,6 +188,6 @@ export default function Lessons() {
           </div>
         </div>
       </div>
-    </div>
+    </div >
   );
 }
