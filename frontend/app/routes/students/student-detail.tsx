@@ -6,6 +6,8 @@ import { studentsApi, lessonsApi, type Student, type Lesson } from "../../data/a
 import { fullName } from "~/helpers/students";
 import { Button } from "~/components/ui/Button";
 import { DeleteModal } from "~/components/DeleteModal";
+import { StudentForm } from "~/components/forms/student";
+import { useSlideOutPanel } from "~/providers/SlideOutPanelProvider";
 
 export function meta({ params }: Route.MetaArgs) {
   return [
@@ -20,6 +22,7 @@ export default function StudentDetail({ params }: Route.ComponentProps) {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
+  const { openPanel } = useSlideOutPanel();
   const studentId = parseInt(params.studentId, 10);
 
   useEffect(() => {
@@ -88,10 +91,16 @@ export default function StudentDetail({ params }: Route.ComponentProps) {
             </Link>
             <div className="flex gap-2">
               <Button
-                variant="primary"
-                href={`/students/${student.id}/edit`}
+                onClick={() =>
+                  openPanel({
+                    title: "Edit Student",
+                    content: <StudentForm student={student} />,
+                  })
+                }
                 icon="pencil"
-              > Edit</Button>
+              >
+                Edit Student
+              </Button>
               <DeleteModal
                 onConfirm={() => studentsApi.delete(student.id)}
                 resourceName="student"

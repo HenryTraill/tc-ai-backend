@@ -8,7 +8,5 @@ export default [
   route("lessons/:lessonId", "routes/lessons/lesson-detail.tsx"),
   route("lessons/:lessonId/edit", "routes/lessons/lesson-edit.tsx"),
   route("students", "routes/students/students.tsx"),
-  route("students/new", "routes/students/student-new.tsx"),
   route("students/:studentId", "routes/students/student-detail.tsx"),
-  route("students/:studentId/edit", "routes/students/student-edit.tsx"),
 ] satisfies RouteConfig;
