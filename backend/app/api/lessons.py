@@ -22,7 +22,7 @@ def build_lesson_read(lesson: Lesson, company: Company = None) -> LessonRead:
     return LessonRead(**lesson.model_dump(), company_name=company_name, tutorcruncher_url=tutorcruncher_url)
 
 
-@router.get('/', response_model=list[LessonRead])
+@router.get('/', response_model=List[LessonRead], name='get_lessons')
 def get_lessons(
     student_id: Optional[int] = Query(None, description='Filter by student ID'), session: Session = Depends(get_session)
 ):

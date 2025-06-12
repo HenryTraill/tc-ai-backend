@@ -23,7 +23,7 @@ def build_student_read(student: Student, company: Company = None) -> StudentRead
     )
 
 
-@router.get('/', response_model=list[StudentRead])
+@router.get('/', response_model=list[StudentRead], name='get_students')
 def get_students(session: Session = Depends(get_session)):
     """Get all students"""
     query = select(Student, Company).outerjoin(Company, Student.company_id == Company.id)
