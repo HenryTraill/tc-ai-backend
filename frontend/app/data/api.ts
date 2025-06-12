@@ -74,6 +74,19 @@ export interface LessonUpdate {
     tutor_tips?: string[];
 }
 
+export interface Client {
+    id: number;
+    first_name: string;
+    last_name: string;
+    email: string;
+    phone: string;
+    address?: string;
+    notes?: string;
+    company_id?: number;
+    tc_id?: string;
+    tc_path?: string;
+}
+
 // API utility functions
 class ApiError extends Error {
     constructor(public status: number, message: string) {
@@ -148,4 +161,27 @@ export const lessonsApi = {
 
     delete: (id: number): Promise<{ message: string }> =>
         apiRequest(`/lessons/${id}`, { method: 'DELETE' }),
-}; 
+};
+
+
+// Client API functions
+export const clientsApi = {
+    getAll: (): Promise<Client[]> => apiRequest('/clients'),
+
+    getById: (id: number): Promise<Client> => apiRequest(`/clients/${id}`),
+
+    create: (client: any): Promise<Client> =>
+        apiRequest('/clients', {
+            method: 'POST',
+            body: JSON.stringify(client),
+        }),
+
+    update: (id: number, client: any): Promise<Client> =>
+        apiRequest(`/clients/${id}`, {
+            method: 'PUT',
+            body: JSON.stringify(client),
+        }),
+
+    delete: (id: number): Promise<{ message: string }> =>
+        apiRequest(`/clients/${id}`, { method: 'DELETE' }),
+};

@@ -1,8 +1,8 @@
-import type { Route } from "./+types/lessons";
+import type { Route } from "../+types/lessons";
 import { LessonListItem } from "~/components/LessonListItem";
 import { Link } from "react-router";
 import { useState, useEffect } from "react";
-import { studentsApi, lessonsApi, type Student, type Lesson } from "../data/api";
+import { studentsApi, lessonsApi, type Student, type Lesson } from "../../data/api";
 import { Button } from "~/components/ui/Button";
 import { fullName } from "~/helpers/students";
 

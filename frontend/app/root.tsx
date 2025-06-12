@@ -10,6 +10,7 @@ import {
 import type { Route } from "./+types/root";
 import { Navigation } from "./components/Navigation";
 import "./app.css";
+import { SlideOutProvider } from "./providers/SlideOutPanelProvider";
 
 export const links: Route.LinksFunction = () => [
   { rel: "preconnect", href: "https://fonts.googleapis.com" },
@@ -50,12 +51,14 @@ export function Layout({ children }: { children: React.ReactNode }) {
 
 export default function App() {
   return (
-    <div className="flex h-screen bg-white">
-      <Navigation />
-      <main className="flex-1 overflow-auto">
-        <Outlet />
-      </main>
-    </div>
+    <SlideOutProvider>
+      <div className="flex h-screen bg-white">
+        <Navigation />
+        <main className="flex-1 overflow-auto">
+          <Outlet />
+        </main>
+      </div>
+    </SlideOutProvider>
   );
 }
 

@@ -1,8 +1,11 @@
-import type { Route } from "./+types/students";
 import { StudentCard } from "~/components/StudentCard";
 import { useState, useEffect } from "react";
-import { studentsApi, lessonsApi, type Student as ApiStudent, type Lesson as ApiLesson, type Student } from "../data/api";
+import { studentsApi, lessonsApi, type Student as ApiStudent, type Lesson as ApiLesson, type Student } from "../../data/api";
 import { fullName } from "~/helpers/students";
+import { Button } from "~/components/ui/Button";
+import type { Route } from "./+types/students";
+import { useSlideOutPanel } from "~/providers/SlideOutPanelProvider";
+import { StudentForm } from "~/components/forms/student";
 
 
 // Transform API data to frontend format
@@ -52,6 +55,8 @@ export default function Students() {
   const [students, setStudents] = useState<Student[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+
+  const { openPanel } = useSlideOutPanel();
 
   useEffect(() => {
     async function fetchStudentsAndLessons() {
@@ -119,6 +124,17 @@ export default function Students() {
             <h1 className="text-4xl font-bold text-slate-800 mb-2">Students ({students.length})</h1>
             <p className="text-slate-600 text-lg">Manage your student roster and track progress</p>
           </div>
+          <Button
+            onClick={() =>
+              openPanel({
+                title: "Edit Student",
+                content: <StudentForm />,
+              })
+            }
+            icon="plus"
+          >
+            Add Student
+          </Button>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">

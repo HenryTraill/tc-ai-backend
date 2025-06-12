@@ -2,8 +2,12 @@ import type { Route } from "./+types/student-detail";
 import { Link } from "react-router";
 import { LessonListItem } from "~/components/LessonListItem";
 import { useState, useEffect } from "react";
-import { studentsApi, lessonsApi, type Student, type Lesson } from "../data/api";
+import { studentsApi, lessonsApi, type Student, type Lesson } from "../../data/api";
 import { fullName } from "~/helpers/students";
+import { Button } from "~/components/ui/Button";
+import { DeleteModal } from "~/components/DeleteModal";
+import { StudentForm } from "~/components/forms/student";
+import { useSlideOutPanel } from "~/providers/SlideOutPanelProvider";
 
 export function meta({ params }: Route.MetaArgs) {
   return [
@@ -18,6 +22,7 @@ export default function StudentDetail({ params }: Route.ComponentProps) {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
+  const { openPanel } = useSlideOutPanel();
   const studentId = parseInt(params.studentId, 10);
 
   useEffect(() => {
@@ -76,13 +81,33 @@ export default function StudentDetail({ params }: Route.ComponentProps) {
     <div className="p-8 min-h-full">
       <div className="max-w-6xl mx-auto">
         <div className="mb-6">
-          <Link
-            to="/students"
-            className="inline-flex items-center text-sm font-medium text-slate-600 hover:text-slate-800"
-          >
-            <span className="mr-1">←</span>
-            Back to Students
-          </Link>
+          <div className="mb-6 flex items-center justify-between">
+            <Link
+              to="/students"
+              className="inline-flex items-center text-sm font-medium text-slate-600 hover:text-slate-800"
+            >
+              <span className="mr-1">←</span>
+              Back to Students
+            </Link>
+            <div className="flex gap-2">
+              <Button
+                onClick={() =>
+                  openPanel({
+                    title: "Edit Student",
+                    content: <StudentForm student={student} />,
+                  })
+                }
+                icon="pencil"
+              >
+                Edit Student
+              </Button>
+              <DeleteModal
+                onConfirm={() => studentsApi.delete(student.id)}
+                resourceName="student"
+                redirectTo="/students"
+              />
+            </div>
+          </div>
         </div>
 
         <div className="bg-white/80 backdrop-blur-sm border border-black rounded-2xl mb-8 shadow-lg">
