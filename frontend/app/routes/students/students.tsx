@@ -16,15 +16,14 @@ function transformApiStudentToFrontend(apiStudent: ApiStudent, lessons: ApiLesso
   const oneWeekAgo = new Date();
   oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
   const recentLessons = studentLessons
-    .filter(lesson => new Date(lesson.date) >= oneWeekAgo)
+    .filter(lesson => new Date(lesson.start_dt) >= oneWeekAgo)
     .map(lesson => ({
       id: lesson.id.toString(),
       studentId: lesson.student_id.toString(),
-      date: lesson.date,
-      startTime: lesson.start_time,
+      date: new Date(lesson.start_dt),
+      startTime: lesson.start_dt,
       subject: lesson.subject,
       topic: lesson.topic,
-      duration: lesson.duration,
       notes: lesson.notes,
       skills_practiced: lesson.skills_practiced,
       main_subjects_covered: lesson.main_subjects_covered,
