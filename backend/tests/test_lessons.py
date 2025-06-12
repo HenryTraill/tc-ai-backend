@@ -1,3 +1,5 @@
+from datetime import datetime, timezone
+
 from fastapi.testclient import TestClient
 from sqlmodel import Session
 
@@ -29,11 +31,10 @@ def test_create_lesson(client: TestClient, session: Session):
 
     lesson_data = {
         'student_id': student.id,
-        'date': '2024-01-15',
-        'start_time': '14:00',
+        'start_dt': '2024-01-15T14:00:00Z',
+        'end_dt': '2024-01-15T15:00:00Z',
         'subject': 'Mathematics',
         'topic': 'Algebra',
-        'duration': 60,
         'notes': 'Student showed good progress',
         'skills_practiced': ['Solving equations', 'Graphing'],
         'main_subjects_covered': ['Linear equations', 'Quadratic functions'],
@@ -45,11 +46,10 @@ def test_create_lesson(client: TestClient, session: Session):
     assert response.status_code == 200
     data = response.json()
     assert data['student_id'] == student.id
-    assert data['date'] == lesson_data['date']
-    assert data['start_time'] == lesson_data['start_time']
+    assert data['start_dt'] == '2024-01-15T14:00:00'
+    assert data['end_dt'] == '2024-01-15T15:00:00'
     assert data['subject'] == lesson_data['subject']
     assert data['topic'] == lesson_data['topic']
-    assert data['duration'] == lesson_data['duration']
     assert data['notes'] == lesson_data['notes']
     assert data['skills_practiced'] == lesson_data['skills_practiced']
     assert data['main_subjects_covered'] == lesson_data['main_subjects_covered']
@@ -81,11 +81,10 @@ def test_create_lesson_with_specific_status(client: TestClient, session: Session
 
     lesson_data = {
         'student_id': student.id,
-        'date': '2024-01-16',
-        'start_time': '15:00',
+        'start_dt': '2024-01-16T15:00:00Z',
+        'end_dt': '2024-01-16T16:30:00Z',
         'subject': 'Physics',
         'topic': 'Mechanics',
-        'duration': 90,
         'notes': 'Completed lesson',
         'status': 'complete',
     }
@@ -99,11 +98,10 @@ def test_create_lesson_invalid_student_id(client: TestClient):
     """Test creating a lesson with invalid student_id"""
     lesson_data = {
         'student_id': 999,  # Non-existent student
-        'date': '2024-01-15',
-        'start_time': '14:00',
+        'start_dt': '2024-01-15T14:00:00Z',
+        'end_dt': '2024-01-15T15:00:00Z',
         'subject': 'Mathematics',
         'topic': 'Algebra',
-        'duration': 60,
         'notes': 'Test lesson',
     }
     response = client.post(client.app.url_path_for('create_lesson'), json=lesson_data)
@@ -136,11 +134,10 @@ def test_get_lessons(client: TestClient, session: Session):
     # Create a test lesson
     lesson = Lesson(
         student_id=student.id,
-        date='2024-01-15',
-        start_time='14:00',
+        start_dt=datetime(2024, 1, 15, 14, 0, tzinfo=timezone.utc),
+        end_dt=datetime(2024, 1, 15, 15, 0, tzinfo=timezone.utc),
         subject='Mathematics',
         topic='Algebra',
-        duration=60,
         notes='Test lesson',
     )
     session.add(lesson)
@@ -187,20 +184,18 @@ def test_get_lessons_with_student_filter(client: TestClient, session: Session):
     # Create lessons for both students
     lesson1 = Lesson(
         student_id=student1.id,
-        date='2024-01-15',
-        start_time='14:00',
+        start_dt=datetime(2024, 1, 15, 14, 0, tzinfo=timezone.utc),
+        end_dt=datetime(2024, 1, 15, 15, 0, tzinfo=timezone.utc),
         subject='Math',
         topic='Algebra',
-        duration=60,
         notes='Student 1 lesson',
     )
     lesson2 = Lesson(
         student_id=student2.id,
-        date='2024-01-16',
-        start_time='15:00',
+        start_dt=datetime(2024, 1, 16, 15, 0, tzinfo=timezone.utc),
+        end_dt=datetime(2024, 1, 16, 16, 30, tzinfo=timezone.utc),
         subject='Science',
         topic='Chemistry',
-        duration=90,
         notes='Student 2 lesson',
     )
     session.add_all([lesson1, lesson2])
@@ -239,20 +234,18 @@ def test_get_student_lessons(client: TestClient, session: Session):
     # Create multiple lessons for the student
     lesson1 = Lesson(
         student_id=student.id,
-        date='2024-01-15',
-        start_time='14:00',
+        start_dt=datetime(2024, 1, 15, 14, 0, tzinfo=timezone.utc),
+        end_dt=datetime(2024, 1, 15, 15, 0, tzinfo=timezone.utc),
         subject='Math',
         topic='Algebra',
-        duration=60,
         notes='First lesson',
     )
     lesson2 = Lesson(
         student_id=student.id,
-        date='2024-01-16',
-        start_time='15:00',
+        start_dt=datetime(2024, 1, 16, 15, 0, tzinfo=timezone.utc),
+        end_dt=datetime(2024, 1, 16, 16, 30, tzinfo=timezone.utc),
         subject='Math',
         topic='Geometry',
-        duration=90,
         notes='Second lesson',
     )
     session.add_all([lesson1, lesson2])
@@ -292,11 +285,10 @@ def test_get_lesson_by_id(client: TestClient, session: Session):
     # Create a test lesson
     lesson = Lesson(
         student_id=student.id,
-        date='2024-01-16',
-        start_time='15:00',
+        start_dt=datetime(2024, 1, 16, 15, 0, tzinfo=timezone.utc),
+        end_dt=datetime(2024, 1, 16, 16, 30, tzinfo=timezone.utc),
         subject='Science',
         topic='Biology',
-        duration=90,
         notes='Biology lesson',
         status=LessonStatus.COMPLETE,
     )
@@ -343,11 +335,10 @@ def test_update_lesson(client: TestClient, session: Session):
     # Create a test lesson
     lesson = Lesson(
         student_id=student.id,
-        date='2024-01-17',
-        start_time='16:00',
+        start_dt=datetime(2024, 1, 17, 16, 0, tzinfo=timezone.utc),
+        end_dt=datetime(2024, 1, 17, 16, 45, tzinfo=timezone.utc),
         subject='English',
         topic='Literature',
-        duration=45,
         notes='Original notes',
         status=LessonStatus.PLANNED,
     )
@@ -356,15 +347,21 @@ def test_update_lesson(client: TestClient, session: Session):
     session.refresh(lesson)
 
     # Update basic fields
-    update_data = {'subject': 'Physics', 'topic': 'Mechanics', 'duration': 90, 'notes': 'Updated notes'}
+    update_data = {
+        'subject': 'Physics',
+        'topic': 'Mechanics',
+        'start_dt': '2024-01-17T16:00:00Z',
+        'end_dt': '2024-01-17T17:30:00Z',
+        'notes': 'Updated notes',
+    }
     response = client.put(client.app.url_path_for('update_lesson', lesson_id=lesson.id), json=update_data)
     assert response.status_code == 200
     data = response.json()
     assert data['subject'] == 'Physics'
     assert data['topic'] == 'Mechanics'
-    assert data['duration'] == 90
     assert data['notes'] == 'Updated notes'
-    assert data['date'] == '2024-01-17'
+    assert data['start_dt'] == '2024-01-17T16:00:00'
+    assert data['end_dt'] == '2024-01-17T17:30:00'
 
 
 def test_update_lesson_protected_fields_ignored(client: TestClient, session: Session):
@@ -391,11 +388,10 @@ def test_update_lesson_protected_fields_ignored(client: TestClient, session: Ses
     # Create a test lesson
     lesson = Lesson(
         student_id=student.id,
-        date='2024-01-15',
-        start_time='14:00',
+        start_dt=datetime(2024, 1, 15, 14, 0, tzinfo=timezone.utc),
+        end_dt=datetime(2024, 1, 15, 15, 0, tzinfo=timezone.utc),
         subject='Mathematics',
         topic='Algebra',
-        duration=60,
         notes='Original notes',
         skills_practiced=['Basic algebra'],
         main_subjects_covered=['Linear equations'],
@@ -412,7 +408,8 @@ def test_update_lesson_protected_fields_ignored(client: TestClient, session: Ses
         'subject': 'English Literature',
         'topic': 'Shakespeare',
         'notes': 'Updated notes',
-        'duration': 60,
+        'start_dt': '2024-01-15T14:00:00Z',
+        'end_dt': '2024-01-15T15:00:00Z',
     }
     response = client.put(client.app.url_path_for('update_lesson', lesson_id=lesson.id), json=update_data)
     assert response.status_code == 200
@@ -420,8 +417,8 @@ def test_update_lesson_protected_fields_ignored(client: TestClient, session: Ses
     assert data['subject'] == 'English Literature'
     assert data['topic'] == 'Shakespeare'
     assert data['notes'] == 'Updated notes'
-    assert data['duration'] == 60
-    assert data['date'] == '2024-01-15'  # Should remain unchanged
+    assert data['start_dt'] == '2024-01-15T14:00:00'
+    assert data['end_dt'] == '2024-01-15T15:00:00'
 
 
 def test_update_lesson_status_to_cancelled(client: TestClient, session: Session):
@@ -448,11 +445,10 @@ def test_update_lesson_status_to_cancelled(client: TestClient, session: Session)
     # Create a test lesson
     lesson = Lesson(
         student_id=student.id,
-        date='2024-01-18',
-        start_time='14:00',
+        start_dt=datetime(2024, 1, 18, 14, 0, tzinfo=timezone.utc),
+        end_dt=datetime(2024, 1, 18, 15, 0, tzinfo=timezone.utc),
         subject='Science',
         topic='Chemistry',
-        duration=60,
         notes='Chemistry lesson',
         status=LessonStatus.PLANNED,
     )
@@ -500,20 +496,18 @@ def test_get_lessons_for_student(client: TestClient, session: Session):
     # Create lessons for this student
     lesson1 = Lesson(
         student_id=student.id,
-        date='2024-01-15',
-        start_time='14:00',
+        start_dt=datetime(2024, 1, 15, 14, 0, tzinfo=timezone.utc),
+        end_dt=datetime(2024, 1, 15, 15, 0, tzinfo=timezone.utc),
         subject='Mathematics',
         topic='Algebra',
-        duration=60,
         notes='Math lesson',
     )
     lesson2 = Lesson(
         student_id=student.id,
-        date='2024-01-16',
-        start_time='15:00',
+        start_dt=datetime(2024, 1, 16, 15, 0, tzinfo=timezone.utc),
+        end_dt=datetime(2024, 1, 16, 16, 30, tzinfo=timezone.utc),
         subject='Physics',
         topic='Mechanics',
-        duration=90,
         notes='Physics lesson',
     )
     session.add(lesson1)

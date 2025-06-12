@@ -24,11 +24,10 @@ class LessonBase(SQLModel):
     student_id: int = Field(foreign_key='student.id')
     company_id: Optional[int] = Field(default=None)
     tc_path: Optional[str] = None
-    date: str
-    start_time: str
+    start_dt: datetime
+    end_dt: datetime
     subject: str
     topic: str
-    duration: int  # in minutes
     notes: str
     status: LessonStatus = Field(default=LessonStatus.PLANNED)
     skills_practiced: List[str] = Field(default_factory=list, sa_column=Column(JSON))
@@ -54,11 +53,10 @@ class LessonUpdate(BaseModel):
     student_id: Optional[int] = None
     company_id: Optional[int] = None
     tc_path: Optional[str] = None
-    date: Optional[str] = None
-    start_time: Optional[str] = None
+    start_dt: Optional[datetime] = None
+    end_dt: Optional[datetime] = None
     subject: Optional[str] = None
     topic: Optional[str] = None
-    duration: Optional[int] = None
     notes: Optional[str] = None
     status: Optional[LessonStatus] = None
     # Note: skills_practiced, main_subjects_covered, student_strengths_observed,
