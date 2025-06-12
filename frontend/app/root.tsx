@@ -52,7 +52,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
 export default function App() {
   return (
     <SlideOutProvider>
-      <div className="flex h-screen bg-white">
+      <div className="flex flex-col md:flex-row h-screen bg-white">
         <Navigation />
         <main className="flex-1 overflow-auto">
           <Outlet />

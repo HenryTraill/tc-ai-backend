@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Link } from 'react-router';
 import type { Lesson } from '~/data/api';
 import { formatTime } from '~/helpers/lessons';
+import { Button } from './ui/Button';
 
 const dateUtils = {
   startOfMonth: (date: Date) => {
@@ -134,13 +135,12 @@ const MonthView = ({ currentDate, lessons }: { currentDate: Date, lessons: Lesso
   const today = new Date();
 
   return (
-    <div className="bg-white rounded-xl shadow-sm overflow-hidden border w-full">
-      <div className="grid grid-cols-7 border-b" style={{ borderColor: 'var(--color-baby-blue)' }}>
+    <div className="bg-white rounded-xl shadow-sm border w-full">
+      <div className="overflow-hidden bg-light-blue rounded-t-xl sticky top-0 z-10 grid grid-cols-7 border-b border-navy-blue">
         {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map(day => (
           <div
             key={day}
-            className="p-4 text-center font-semibold"
-            style={{ backgroundColor: 'var(--color-light-blue)', color: 'var(--color-navy-blue)' }}
+            className="p-4 text-center font-semibold color-navy-blue"
           >
             {day}
           </div>
@@ -303,25 +303,47 @@ const DayView = ({ currentDate, lessons }: { currentDate: Date, lessons: Lesson[
 
 const Calendar = ({ lessons }: { lessons: Lesson[] }) => {
   const [currentDate, setCurrentDate] = useState(new Date());
-  const [view, setView] = useState('month');
+  const [view, setView] = useState<'month' | 'week' | 'day'>('month');
+
+  const today = new Date();
 
   const getNavigationLabel = () => {
     switch (view) {
       case 'day':
         return dateUtils.format(currentDate, 'MMMM d, yyyy');
-      case 'week':
+      case 'week': {
         const weekStart = dateUtils.startOfWeek(new Date(currentDate));
         const weekEnd = dateUtils.addDays(weekStart, 6);
         return `${dateUtils.format(weekStart, 'MMM d')} - ${dateUtils.format(weekEnd, 'MMM d, yyyy')}`;
+      }
       case 'month':
       default:
         return dateUtils.format(currentDate, 'MMMM yyyy');
     }
   };
 
-  const navigate = (direction: string) => {
-    const newDate = new Date(currentDate);
+  const isTodayView = () => {
+    switch (view) {
+      case 'day':
+        return dateUtils.isSameDay(currentDate, today);
+      case 'week': {
+        const start = dateUtils.startOfWeek(currentDate);
+        const end = dateUtils.addDays(start, 6);
+        return today >= start && today <= end;
+      }
+      case 'month':
+        return currentDate.getMonth() === today.getMonth() && currentDate.getFullYear() === today.getFullYear();
+      default:
+        return false;
+    }
+  };
 
+  const handleTodayClick = () => {
+    setCurrentDate(new Date());
+  };
+
+  const navigate = (direction: 'next' | 'prev') => {
+    const newDate = new Date(currentDate);
     switch (view) {
       case 'day':
         setCurrentDate(dateUtils.addDays(newDate, direction === 'next' ? 1 : -1));
@@ -330,14 +352,13 @@ const Calendar = ({ lessons }: { lessons: Lesson[] }) => {
         setCurrentDate(dateUtils.addWeeks(newDate, direction === 'next' ? 1 : -1));
         break;
       case 'month':
-      default:
         newDate.setMonth(newDate.getMonth() + (direction === 'next' ? 1 : -1));
         setCurrentDate(newDate);
         break;
     }
   };
 
-  const renderView = (lessons: Lesson[]) => {
+  const renderView = () => {
     switch (view) {
       case 'day':
         return <DayView currentDate={currentDate} lessons={lessons} />;
@@ -352,14 +373,14 @@ const Calendar = ({ lessons }: { lessons: Lesson[] }) => {
   return (
     <div>
       <div className="flex items-center justify-between mb-8">
-        <div className='flex items-center justify-between w-full'>
+        <div className="flex items-center justify-between w-full">
           <h1 className="text-4xl font-bold text-slate-800 flex-1">Calendar</h1>
 
           <div className="flex items-center gap-4">
-            <div className="relative">
+            <div className="relative w-22">
               <select
                 value={view}
-                onChange={(e) => setView(e.target.value)}
+                onChange={(e) => setView(e.target.value as 'month' | 'week' | 'day')}
                 className="appearance-none bg-white border border-gray-300 rounded-lg px-4 py-2 pr-8 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-blue-500"
                 style={{ color: 'var(--color-navy-blue)' }}
               >
@@ -370,14 +391,21 @@ const Calendar = ({ lessons }: { lessons: Lesson[] }) => {
               <i className="fas fa-fw fa-chevron-down absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-400 text-xs pointer-events-none"></i>
             </div>
 
+            <Button
+              onClick={handleTodayClick}
+              disabled={isTodayView()}
+            >
+              Today
+            </Button>
+
             <div className="flex items-center">
               <button
                 onClick={() => navigate('prev')}
                 className="p-2 rounded-lg hover:bg-opacity-80 transition-colors"
               >
-                <i className="fas fa-fw fa-fw fa-chevron-left text-lg"></i>
+                <i className="fas fa-fw fa-chevron-left text-lg"></i>
               </button>
-              <h3 className="text-xl font-semibold min-w-48 text-center text-navy-blue">
+              <h3 className="text-xl font-semibold text-center text-navy-blue">
                 {getNavigationLabel()}
               </h3>
               <button
@@ -391,7 +419,7 @@ const Calendar = ({ lessons }: { lessons: Lesson[] }) => {
         </div>
       </div>
 
-      {renderView(lessons)}
+      {renderView()}
     </div>
   );
 };

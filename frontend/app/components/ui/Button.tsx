@@ -20,29 +20,33 @@ export const Button = ({
   type = "button",
 }: ButtonProps) => {
   const base =
-    "inline-flex items-center px-4 py-2 rounded-lg font-medium transition-all";
+    "inline-flex items-center px-4 py-2.5 rounded-lg font-medium transition-all";
   let styles = "";
 
-  switch (variant) {
-    case "primary":
-      styles = "bg-steel-blue text-white hover:bg-navy-blue";
-      break;
-    case "warning":
-      styles = "bg-red-700 text-white hover:bg-red-600";
-      break;
-    case "success":
-      styles = "bg-green-500 text-white hover:bg-green-600";
-      break;
-    case "outline":
-      styles =
-        "border border-steel-blue text-steel-blue hover:bg-steel-blue hover:text-white";
-      break;
-    case "ghost":
-      styles =
-        "text-steel-blue hover:bg-steel-blue hover:text-white bg-transparent";
-      break;
-    default:
-      styles = "bg-steel-blue text-white hover:bg-blue-700";
+  if (disabled) {
+    styles = "bg-gray-300 text-gray-500 cursor-not-allowed";
+  } else {
+    switch (variant) {
+      case "primary":
+        styles = "bg-steel-blue text-white hover:bg-navy-blue";
+        break;
+      case "warning":
+        styles = "bg-red-700 text-white hover:bg-red-600";
+        break;
+      case "success":
+        styles = "bg-green-500 text-white hover:bg-green-600";
+        break;
+      case "outline":
+        styles =
+          "border border-steel-blue text-steel-blue hover:bg-steel-blue hover:text-white";
+        break;
+      case "ghost":
+        styles =
+          "text-steel-blue hover:bg-steel-blue hover:text-white bg-transparent";
+        break;
+      default:
+        styles = "bg-steel-blue text-white hover:bg-blue-700";
+    }
   }
 
   const content = (
