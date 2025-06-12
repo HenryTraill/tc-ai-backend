@@ -118,7 +118,7 @@ export default function Students() {
   return (
     <div className="p-8 min-h-full bg-cream">
       <div className="max-w-6xl mx-auto">
-        <div className="flex justify-between items-center mb-8">
+        <div className="flex flex-col md:flex-row gap-4 justify-between items-start md:items-center mb-8">
           <div>
             <h1 className="text-4xl font-bold text-slate-800 mb-2">Students ({students.length})</h1>
             <p className="text-slate-600 text-lg">Manage your student roster and track progress</p>

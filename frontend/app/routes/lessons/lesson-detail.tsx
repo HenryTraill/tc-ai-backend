@@ -87,7 +87,7 @@ export default function LessonDetail({ params }: Route.ComponentProps) {
   return (
     <div className="p-8 min-h-full bg-cream">
       <div className="max-w-6xl mx-auto">
-        <div className="mb-6 flex items-center justify-between">
+        <div className="mb-6 flex flex-col gap-4 md:flex-row justify-between flex-wrap md:items-center">
           <Link
             to="/lessons"
             className="inline-flex items-center text-sm font-medium text-slate-600 hover:text-slate-800"
@@ -96,7 +96,6 @@ export default function LessonDetail({ params }: Route.ComponentProps) {
             Back to Lessons
           </Link>
           <div className="flex gap-2">
-
             <Button
               onClick={() =>
                 openPanel({
@@ -233,7 +232,7 @@ export default function LessonDetail({ params }: Route.ComponentProps) {
             <p className="text-slate-600">Recommendations for continuing with this student</p>
           </div>
           <div className="p-6">
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid md:grid-cols-2 gap-4">
               {lesson.tutor_tips.map((tip, index) => (
                 <div
                   key={index}

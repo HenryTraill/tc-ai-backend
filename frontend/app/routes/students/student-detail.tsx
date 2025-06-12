@@ -81,7 +81,7 @@ export default function StudentDetail({ params }: Route.ComponentProps) {
     <div className="p-8 min-h-full bg-cream">
       <div className="max-w-6xl mx-auto">
         <div className="mb-6">
-          <div className="mb-6 flex items-center justify-between">
+          <div className="flex flex-col md:flex-row gap-4 justify-between items-start md:items-center mb-8">
             <Link
               to="/students"
               className="inline-flex items-center text-sm font-medium text-slate-600 hover:text-slate-800"
