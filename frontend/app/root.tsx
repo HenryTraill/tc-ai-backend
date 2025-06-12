@@ -5,6 +5,7 @@ import {
   Outlet,
   Scripts,
   ScrollRestoration,
+  useLocation,
 } from "react-router";
 
 import type { Route } from "./+types/root";
@@ -50,6 +51,14 @@ export function Layout({ children }: { children: React.ReactNode }) {
 }
 
 export default function App() {
+  const location = useLocation();
+  const isLoginPage = location.pathname === "/login";
+
+
+  if (isLoginPage) {
+    return <Outlet />;
+  }
+
   return (
     <SlideOutProvider>
       <div className="flex flex-col md:flex-row h-screen bg-white">

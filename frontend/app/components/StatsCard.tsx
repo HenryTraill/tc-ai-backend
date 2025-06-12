@@ -10,7 +10,7 @@ interface StatsCardProps {
 
 export const StatsCard = ({ title, value, description, trend }: StatsCardProps) => {
   return (
-    <div className="bg-white border border-navy-blue-15 rounded-2xl p-8 shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1 relative overflow-hidden group">
+    <div className="bg-white border border-navy-blue rounded-2xl p-8 shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1 relative overflow-hidden group">
       <h3 className="text-sm font-semibold text-navy-blue-75 uppercase tracking-wide mb-4">
         {title}
       </h3>
