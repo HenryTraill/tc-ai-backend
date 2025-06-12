@@ -78,7 +78,7 @@ export default function StudentDetail({ params }: Route.ComponentProps) {
   }
 
   return (
-    <div className="p-8 min-h-full">
+    <div className="p-8 min-h-full bg-cream">
       <div className="max-w-6xl mx-auto">
         <div className="mb-6">
           <div className="mb-6 flex items-center justify-between">
@@ -170,7 +170,7 @@ export default function StudentDetail({ params }: Route.ComponentProps) {
             ) : (
               <div className="space-y-4">
                 {studentLessons
-                  .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
+                  .sort((a, b) => new Date(b.start_dt).getTime() - new Date(a.start_dt).getTime())
                   .map((lesson) => (
                     <LessonListItem key={lesson.id} lesson={lesson} />
                   ))}

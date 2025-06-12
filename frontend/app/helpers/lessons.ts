@@ -18,22 +18,32 @@ export function getDurationBetween(start: string, end: string): string {
 
 export const formatDate = (dateString: string) => {
   const date = new Date(dateString);
-  return date.toLocaleDateString('en-US', {
+  return date.toLocaleDateString('en-GB', {
     weekday: 'long',
     year: 'numeric',
     month: 'long',
-    day: 'numeric'
+    day: 'numeric',
+    timeZone: 'Europe/London',
   });
 };
 
 export function formatTime(timestamp: string): string {
-  const date = new Date(timestamp);
-  if (isNaN(date.getTime())) return "Invalid time";
-
-  return date.toLocaleTimeString([], {
+  const date = new Date(timestamp + 'Z');
+  return date.toLocaleTimeString('en-GB', {
     hour: 'numeric',
     minute: '2-digit',
     hour12: true,
+    timeZone: 'Europe/London',
+  });
+}
+
+export function formatTimeForInput(timestamp: string): string {
+  const date = new Date(timestamp + 'Z'); // treat as UTC
+  return date.toLocaleTimeString('en-GB', {
+    hour: '2-digit',
+    minute: '2-digit',
+    hour12: false,
+    timeZone: 'Europe/London',
   });
 }
 

@@ -81,7 +81,7 @@ export default function Home() {
   }));
 
   const recentLessons = lessonsWithStudents
-    .sort((a, b) => new Date(b.created_at || b.date).getTime() - new Date(a.created_at || a.date).getTime())
+    .sort((a, b) => new Date(b.created_at || b.start_dt).getTime() - new Date(a.created_at || a.start_dt).getTime())
     .slice(0, 3);
 
   return (

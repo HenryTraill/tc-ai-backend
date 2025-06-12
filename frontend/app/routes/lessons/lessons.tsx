@@ -1,12 +1,11 @@
-import type { Route } from "../+types/lessons";
 import { LessonListItem } from "~/components/LessonListItem";
-import { Link } from "react-router";
 import { useState, useEffect } from "react";
 import { studentsApi, lessonsApi, type Student, type Lesson } from "../../data/api";
 import { Button } from "~/components/ui/Button";
 import { fullName } from "~/helpers/students";
 import { useSlideOutPanel } from "~/providers/SlideOutPanelProvider";
 import { LessonForm } from "~/components/forms/lessons";
+import type { Route } from "./+types/lessons";
 
 export function meta({ }: Route.MetaArgs) {
   return [
@@ -86,7 +85,7 @@ export default function Lessons() {
   }));
 
   const sortedLessons = lessonsWithStudents.sort((a, b) =>
-    new Date(b.date).getTime() - new Date(a.date).getTime()
+    new Date(b.start_dt).getTime() - new Date(a.start_dt).getTime()
   );
 
   const totalDuration = lessons.reduce((sum, lesson) => {

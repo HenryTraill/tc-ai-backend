@@ -1,25 +1,13 @@
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router";
-import { clientsApi, studentsApi, type Client } from "../../data/api";
+import { clientsApi, studentsApi, type Client, type Student } from "../../data/api";
 import { Button } from "../ui/Button";
 import { useEffect, useRef, useState, type RefObject } from "react";
 import { SlideOutPanelFooter } from "../SlideOutPanel";
 import { fullName } from "~/helpers/students";
 
-interface StudentFormData {
-  id?: number;
-  client_id: number;
-  first_name: string;
-  last_name: string;
-  email: string;
-  phone: string;
-  grade: string;
-  strengths: string[];
-  weaknesses: string[];
-}
-
 type StudentFormProps = {
-  student?: StudentFormData;
+  student?: Student;
 };
 
 export const StudentForm = ({ student }: StudentFormProps) => {
@@ -45,9 +33,6 @@ export const StudentForm = ({ student }: StudentFormProps) => {
     fetchData();
   }, [])
 
-
-  console.log("Student Form Rendered", student);
-  console.log("Clients Loaded", clients);
   const {
     register,
     handleSubmit,
@@ -88,7 +73,7 @@ export const StudentForm = ({ student }: StudentFormProps) => {
     <>
       <form ref={formRef} onSubmit={handleSubmit(onSubmit)}>
         <div className="p-4 space-y-4">
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid gap-4">
             <div>
               <label className="text-sm font-medium text-slate-700 mb-1 block">Client</label>
               <select

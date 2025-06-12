@@ -5,6 +5,9 @@ const API_BASE_URL = 'http://localhost:8000/api';
 export interface Student {
     id: number;
     first_name: string;
+    client_id: number;
+    phone: string;
+    email: string;
     last_name: string;
     grade: string;
     strengths: string[];

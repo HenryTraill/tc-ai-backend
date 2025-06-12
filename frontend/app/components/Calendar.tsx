@@ -4,41 +4,41 @@ import type { Lesson } from '~/data/api';
 import { formatTime } from '~/helpers/lessons';
 
 const dateUtils = {
-  startOfMonth: (date) => {
+  startOfMonth: (date: Date) => {
     return new Date(date.getFullYear(), date.getMonth(), 1);
   },
 
-  endOfMonth: (date) => {
+  endOfMonth: (date: Date) => {
     return new Date(date.getFullYear(), date.getMonth() + 1, 0);
   },
 
-  startOfWeek: (date) => {
+  startOfWeek: (date: Date) => {
     const day = date.getDay();
     const diff = date.getDate() - day;
     return new Date(date.setDate(diff));
   },
 
-  startOfDay: (date) => {
+  startOfDay: (date: Date) => {
     return new Date(date.getFullYear(), date.getMonth(), date.getDate());
   },
 
-  addDays: (date, days) => {
+  addDays: (date: Date, days: number) => {
     const result = new Date(date);
     result.setDate(result.getDate() + days);
     return result;
   },
 
-  addWeeks: (date, weeks) => {
+  addWeeks: (date: Date, weeks: number) => {
     return dateUtils.addDays(date, weeks * 7);
   },
 
-  isSameDay: (date1, date2) => {
+  isSameDay: (date1: Date, date2: Date) => {
     return date1.getDate() === date2.getDate() &&
       date1.getMonth() === date2.getMonth() &&
       date1.getFullYear() === date2.getFullYear();
   },
 
-  format: (date, formatStr) => {
+  format: (date: Date, formatStr: string) => {
     const months = [
       'January', 'February', 'March', 'April', 'May', 'June',
       'July', 'August', 'September', 'October', 'November', 'December'
@@ -69,7 +69,7 @@ const lessonUtils = {
     return lessons.filter(lesson => dateUtils.isSameDay(new Date(lesson.start_dt), date));
   },
 
-  getTypeColor: (type) => {
+  getTypeColor: (type: any) => {
     const colors = {
       piano: 'bg-blue-100 text-blue-800 border-blue-200',
       guitar: 'bg-green-100 text-green-800 border-green-200',
@@ -79,11 +79,11 @@ const lessonUtils = {
     return colors[type] || 'bg-gray-100 text-gray-800 border-gray-200';
   },
 
-  sortLessonsByTime: (lessons) => {
+  sortLessonsByTime: (lessons: Lesson[]) => {
     return lessons.sort((a, b) => {
-      const timeA = new Date(`1970/01/01 ${a.time}`);
-      const timeB = new Date(`1970/01/01 ${b.time}`);
-      return timeA - timeB;
+      const timeA = new Date(`1970/01/01 ${a.start_dt}`);
+      const timeB = new Date(`1970/01/01 ${b.start_dt}`);
+      return Number(timeA) - Number(timeB);
     });
   }
 };
@@ -114,7 +114,7 @@ const LessonCard = ({ lesson, size = 'small', showDate = false }: { lesson: Less
   );
 };
 
-const MonthView = ({ currentDate, lessons }) => {
+const MonthView = ({ currentDate, lessons }: { currentDate: Date, lessons: Lesson[] }) => {
   const getDaysInMonth = () => {
     const start = dateUtils.startOfMonth(currentDate);
     const startDate = dateUtils.startOfWeek(new Date(start));
@@ -171,7 +171,7 @@ const MonthView = ({ currentDate, lessons }) => {
 
               <div className="space-y-1">
                 {dayLessons.slice(0, 2).map(lesson => (
-                  <LessonCard key={lesson.id} lesson={lesson} size="small" />
+                  <LessonCard key={lesson.id} lesson={lesson} size="small" showDate={false} />
                 ))}
 
                 {dayLessons.length > 2 && (
@@ -194,7 +194,7 @@ const MonthView = ({ currentDate, lessons }) => {
   );
 };
 
-const WeekView = ({ currentDate, lessons }) => {
+const WeekView = ({ currentDate, lessons }: { currentDate: Date, lessons: Lesson[] }) => {
   const getWeekDays = () => {
     const startOfWeek = dateUtils.startOfWeek(new Date(currentDate));
     const days = [];
@@ -246,7 +246,7 @@ const WeekView = ({ currentDate, lessons }) => {
             >
               <div className="space-y-2">
                 {dayLessons.map(lesson => (
-                  <LessonCard key={lesson.id} lesson={lesson} size="medium" />
+                  <LessonCard key={lesson.id} lesson={lesson} size="medium" showDate={false} />
                 ))}
                 {dayLessons.length === 0 && (
                   <div className="text-xs text-gray-400 italic">No lessons</div>
@@ -260,7 +260,7 @@ const WeekView = ({ currentDate, lessons }) => {
   );
 };
 
-const DayView = ({ currentDate, lessons }) => {
+const DayView = ({ currentDate, lessons }: { currentDate: Date, lessons: Lesson[] }) => {
   const dayLessons = lessonUtils.sortLessonsByTime(lessonUtils.getLessonsForDay(lessons, currentDate));
   const today = new Date();
   const isToday = dateUtils.isSameDay(currentDate, today);
@@ -287,7 +287,7 @@ const DayView = ({ currentDate, lessons }) => {
         {dayLessons.length > 0 ? (
           <div className="space-y-4">
             {dayLessons.map(lesson => (
-              <LessonCard key={lesson.id} lesson={lesson} size="large" />
+              <LessonCard key={lesson.id} lesson={lesson} size="large" showDate={false} />
             ))}
           </div>
         ) : (
@@ -319,7 +319,7 @@ const Calendar = ({ lessons }: { lessons: Lesson[] }) => {
     }
   };
 
-  const navigate = (direction) => {
+  const navigate = (direction: string) => {
     const newDate = new Date(currentDate);
 
     switch (view) {
@@ -337,7 +337,7 @@ const Calendar = ({ lessons }: { lessons: Lesson[] }) => {
     }
   };
 
-  const renderView = (lessons) => {
+  const renderView = (lessons: Lesson[]) => {
     switch (view) {
       case 'day':
         return <DayView currentDate={currentDate} lessons={lessons} />;

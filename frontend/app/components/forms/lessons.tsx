@@ -5,6 +5,7 @@ import { Button } from "../ui/Button";
 import { fullName } from "~/helpers/students";
 import { SlideOutPanelFooter } from "../SlideOutPanel";
 import { useRef, type RefObject } from "react";
+import { formatTimeForInput } from "~/helpers/lessons";
 
 interface LessonFormValues {
   student_id: string;
@@ -39,8 +40,8 @@ export const LessonForm = ({ students, lesson }: LessonFormProps) => {
     defaultValues: {
       student_id: lesson?.student_id?.toString() ?? "",
       date: lesson?.start_dt ? lesson.start_dt.slice(0, 10) : "",
-      start_time: lesson?.start_dt ? new Date(lesson.start_dt).toTimeString().slice(0, 5) : "",
-      end_time: lesson?.end_dt ? new Date(lesson.end_dt).toTimeString().slice(0, 5) : "",
+      start_time: lesson?.start_dt ? formatTimeForInput(lesson.start_dt) : "",
+      end_time: lesson?.end_dt ? formatTimeForInput(lesson.end_dt) : "",
       subject: lesson?.subject ?? "",
       topic: lesson?.topic ?? "",
       notes: lesson?.notes ?? "",
