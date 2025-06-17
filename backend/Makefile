@@ -20,6 +20,7 @@ test:
 test-cov:
 	uv run coverage run -m pytest
 	uv run coverage report
+	uv run coverage xml -o coverage.xml
 
 # Lint code
 lint:

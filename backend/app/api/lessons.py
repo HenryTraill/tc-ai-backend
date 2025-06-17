@@ -1,11 +1,13 @@
 from datetime import datetime, timezone
 from typing import List, Optional
 
+import httpx
 from fastapi import APIRouter, Depends, HTTPException
 from fastapi.params import Query
 from sqlmodel import Session, select
 
 from ..core.auth import get_current_active_user
+from ..core.config import settings
 from ..core.database import get_session
 from ..models import Company, Lesson, LessonCreate, LessonRead, LessonStudent, LessonTutor, LessonUpdate, Student, User
 
@@ -30,11 +32,7 @@ def _get_lessons_for_user(session: Session, current_user: User, base_query=None)
         base_query = select(Lesson)
 
     if current_user.is_tutor:
-        # For tutors, if they have no LessonTutor entries, return all lessons
-        # Otherwise, return only lessons linked to them
-        tutor_lessons = session.exec(select(LessonTutor).where(LessonTutor.tutor_id == current_user.id)).all()
-        if not tutor_lessons:
-            return base_query.where(False)
+        # For tutors, return only lessons linked to them
         return base_query.join(LessonTutor).where(LessonTutor.tutor_id == current_user.id)
     else:
         assert current_user.is_admin
@@ -261,8 +259,65 @@ def get_lessons_for_student(
         .join(LessonStudent, Lesson.id == LessonStudent.lesson_id)
         .where(LessonStudent.student_id == student_id)
     )
-
     # Apply user-based filtering
     query = _get_lessons_for_user(session, current_user, base_query)
     lessons = session.exec(query).all()
     return [build_lesson_read(lesson) for lesson in lessons]
+
+
+@router.post('/{lesson_id}/eurus-space', name='create_eurus_space')
+async def create_eurus_space(
+    lesson_id: int,
+    session: Session = Depends(get_session),
+    current_user: User = Depends(get_current_active_user),
+):
+    """Create a Eurus space for a lesson and return the access URL"""
+    # Get the lesson
+    base_query = select(Lesson).where(Lesson.id == lesson_id)
+    query = _get_lessons_for_user(session, current_user, base_query)
+    lesson = session.exec(query).first()
+
+    if not lesson:
+        raise HTTPException(status_code=404, detail='Lesson not found')
+
+    # Get all students for this lesson
+    lesson_students = session.exec(
+        select(Student)
+        .join(LessonStudent, Student.id == LessonStudent.student_id)
+        .where(LessonStudent.lesson_id == lesson_id)
+    ).all()
+
+    if not lesson_students:
+        raise HTTPException(status_code=404, detail='No students found for this lesson')
+
+    # Prepare the data for Eurus
+    space_data = {
+        'lesson_id': str(lesson_id),  # Convert to string as API accepts both string and integer
+        'tutors': [
+            {
+                'user_id': str(current_user.id),
+                'name': f'{current_user.first_name} {current_user.last_name}',
+                'email': current_user.email if hasattr(current_user, 'email') else None,
+                'is_leader': True,
+            }
+        ],
+        'students': [
+            {
+                'user_id': str(student.id),
+                'name': f'{student.first_name} {student.last_name}',
+                'email': student.email if hasattr(student, 'email') else None,
+            }
+            for student in lesson_students
+        ],
+        'not_before': lesson.start_dt.isoformat() if lesson.start_dt else None,
+    }
+
+    try:
+        async with httpx.AsyncClient() as client:
+            response = await client.post(
+                f'{settings.eurus_api_url}/api/space/', json=space_data, headers={'X-API-Key': settings.eurus_api_key}
+            )
+            response.raise_for_status()
+            return response.json()
+    except httpx.HTTPError as e:
+        raise HTTPException(status_code=500, detail=f'Failed to create Eurus space: {str(e)}')

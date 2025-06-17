@@ -32,5 +32,9 @@ class Settings(BaseSettings):
     # Logfire
     logfire_token: Optional[str] = None
 
+    # Eurus
+    eurus_api_url: str = 'http://localhost:5001'
+    eurus_api_key: str = 'test-key'
+
 
 settings = Settings()

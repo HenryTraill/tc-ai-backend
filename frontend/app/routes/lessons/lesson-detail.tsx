@@ -22,6 +22,7 @@ export default function LessonDetail({ params }: Route.ComponentProps) {
   const [students, setStudents] = useState<Student[] | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [joiningSpace, setJoiningSpace] = useState(false);
 
   const { openPanel } = useSlideOutPanel();
   const lessonId = parseInt(params.lessonId, 10);
@@ -80,7 +81,20 @@ export default function LessonDetail({ params }: Route.ComponentProps) {
     );
   }
 
-
+  const handleJoinSpace = async () => {
+    try {
+      setJoiningSpace(true);
+      const response = await lessonsApi.createEurusSpace(lessonId);
+      // Get the tutor's space URL (first one in the array)
+      const spaceUrl = response.tutor_spaces[0].space_url;
+      // Open the space in a new tab
+      window.open(spaceUrl, '_blank');
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to join space');
+    } finally {
+      setJoiningSpace(false);
+    }
+  };
 
   return (
     <div className="p-8 min-h-full bg-cream">
@@ -94,6 +108,13 @@ export default function LessonDetail({ params }: Route.ComponentProps) {
             Back to Lessons
           </Link>
           <div className="flex gap-2">
+            <Button
+              onClick={handleJoinSpace}
+              icon="video"
+              disabled={joiningSpace}
+            >
+              {joiningSpace ? 'Joining...' : 'Join Space'}
+            </Button>
             <Button
               onClick={() =>
                 openPanel({

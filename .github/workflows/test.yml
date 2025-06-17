@@ -42,3 +42,4 @@ jobs:
       with:
         token: ${{ secrets.CODECOV_TOKEN }}
         directory: ./backend
+        files: ./backend/coverage.xml

@@ -174,6 +174,11 @@ export const lessonsApi = {
 
     delete: (id: number): Promise<{ message: string }> =>
         apiRequest(`/lessons/${id}`, { method: 'DELETE' }),
+
+    createEurusSpace: (id: number): Promise<{ tutor_spaces: Array<{ space_url: string }> }> =>
+        apiRequest(`/lessons/${id}/eurus-space`, {
+            method: 'POST',
+        }),
 };
 
 // Client API functions
