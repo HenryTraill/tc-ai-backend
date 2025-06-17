@@ -12,6 +12,7 @@ import type { Route } from "./+types/root";
 import { Navigation } from "./components/Navigation";
 import "./app.css";
 import { SlideOutProvider } from "./providers/SlideOutPanelProvider";
+import { AuthProvider } from "./providers/AuthProvider";
 
 export const links: Route.LinksFunction = () => [
   { rel: "preconnect", href: "https://fonts.googleapis.com" },
@@ -60,14 +61,16 @@ export default function App() {
   }
 
   return (
-    <SlideOutProvider>
-      <div className="flex flex-col md:flex-row h-screen bg-white">
-        <Navigation />
-        <main className="flex-1 overflow-auto">
-          <Outlet />
-        </main>
-      </div>
-    </SlideOutProvider>
+    <AuthProvider>
+      <SlideOutProvider>
+        <div className="flex flex-col md:flex-row h-screen bg-white">
+          <Navigation />
+          <main className="flex-1 overflow-auto">
+            <Outlet />
+          </main>
+        </div>
+      </SlideOutProvider>
+    </AuthProvider>
   );
 }
 

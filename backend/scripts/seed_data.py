@@ -6,8 +6,9 @@ from datetime import datetime, timedelta
 
 from sqlmodel import Session, select
 
+from app.core.auth import get_password_hash
 from app.core.database import create_db_and_tables, engine
-from app.models import Client, Lesson, Student
+from app.models import Client, Company, Lesson, LessonStudent, LessonTutor, Student, TutorStudent, User, UserType
 
 # Sample clients data
 clients_data = [
@@ -316,7 +317,6 @@ def generate_lessons_for_student(student_id: int, student_name: str, grade: str,
         end_dt = start_dt + timedelta(minutes=duration_minutes)
 
         lesson = {
-            'student_id': student_id,
             'start_dt': start_dt,
             'end_dt': end_dt,
             'subject': template['subject'],
@@ -327,6 +327,7 @@ def generate_lessons_for_student(student_id: int, student_name: str, grade: str,
             'student_strengths_observed': random.sample(general_strengths, k=random.randint(2, 4)),
             'student_weaknesses_observed': random.sample(general_weaknesses, k=random.randint(1, 3)),
             'tutor_tips': random.sample(tutor_tips, k=random.randint(3, 5)),
+            '_student_id': student_id,  # Store student_id separately for junction table creation
         }
 
         lessons.append(lesson)
@@ -345,6 +346,46 @@ def seed_database():
         if len(existing_students) > 0:
             print('Database already contains data. Skipping seed.')
             return
+
+        print('Creating test company...')
+        test_company = Company(
+            name='Test Company',
+            tc_id='123',
+            tutorcruncher_domain='https://test.tutorcruncher.com',
+        )
+        session.add(test_company)
+        session.commit()
+        session.refresh(test_company)
+        print(f'Created test company with ID: {test_company.id}')
+
+        print('Creating test tutor user...')
+        test_tutor = User(
+            email='testing@tutorcruncher.com',
+            hashed_password=get_password_hash('testing'),
+            user_type=UserType.TUTOR,
+            is_active=True,
+            first_name='Test',
+            last_name='Tutor',
+        )
+        session.add(test_tutor)
+        session.commit()
+        session.refresh(test_tutor)
+        print(f'Created test tutor user with ID: {test_tutor.id}')
+
+        print('Creating test admin user...')
+        test_admin = User(
+            email='admin@tutorcruncher.com',
+            hashed_password=get_password_hash('testing'),
+            user_type=UserType.ADMIN,
+            is_active=True,
+            first_name='Test',
+            last_name='Admin',
+            company_ids=[test_company.id],
+        )
+        session.add(test_admin)
+        session.commit()
+        session.refresh(test_admin)
+        print(f'Created test admin user with ID: {test_admin.id}')
 
         print('Seeding clients...')
         clients = []
@@ -365,6 +406,8 @@ def seed_database():
             # Link each student to the corresponding client
             student_data_with_client = student_data.copy()
             student_data_with_client['client_id'] = clients[i].id
+            # Link student to company
+            student_data_with_client['company_id'] = test_company.id
 
             student = Student(**student_data_with_client)
             session.add(student)
@@ -375,6 +418,11 @@ def seed_database():
         # Refresh to get IDs
         for student in students:
             session.refresh(student)
+            # Create TutorStudent association
+            tutor_student = TutorStudent(tutor_id=test_tutor.id, student_id=student.id)
+            session.add(tutor_student)
+
+        session.commit()
 
         print('Generating lessons with recent and future dates...')
         all_lessons = []
@@ -388,14 +436,41 @@ def seed_database():
             all_lessons.extend(student_lessons)
 
         print(f'Seeding {len(all_lessons)} lessons...')
+        lesson_student_pairs = []  # Store student_id for each lesson for junction table
+
         for lesson_data in all_lessons:
+            # Extract student_id before creating lesson
+            student_id = lesson_data.pop('_student_id')
+            # Add tutor_id to lesson data
+            lesson_data['tutor_id'] = test_tutor.id
             lesson = Lesson(**lesson_data)
+            session.add(lesson)
+            lesson_student_pairs.append((lesson, student_id))
+
+        session.commit()
+
+        # Refresh all lessons to get their IDs
+        for lesson, _ in lesson_student_pairs:
+            session.refresh(lesson)
+
+        # Now create junction table entries
+        print('Creating lesson-student associations...')
+        for lesson, student_id in lesson_student_pairs:
+            lesson_student = LessonStudent(lesson_id=lesson.id, student_id=student_id)
+            session.add(lesson_student)
+            # Create LessonTutor association
+            lesson_tutor = LessonTutor(lesson_id=lesson.id, tutor_id=test_tutor.id)
+            session.add(lesson_tutor)
+            # Link lesson to company
+            lesson.company_id = test_company.id
             session.add(lesson)
 
         session.commit()
 
         print('Database seeded successfully!')
         print(f'Created {len(clients_data)} clients, {len(students_data)} students and {len(all_lessons)} lessons')
+        print(f'Created test tutor user: {test_tutor.email}')
+        print(f'Created test admin user: {test_admin.email}')
 
         # Show breakdown of past vs future lessons
         now = datetime.now()

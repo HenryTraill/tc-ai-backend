@@ -24,6 +24,7 @@ class Client(ClientBase, table=True):
     id: Optional[int] = Field(default=None, primary_key=True)
     created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
     updated_at: Optional[datetime] = None
+    email: EmailStr = Field(unique=True)
 
     students: List['Student'] = Relationship(back_populates='client')
 

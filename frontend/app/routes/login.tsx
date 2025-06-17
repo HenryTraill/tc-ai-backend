@@ -1,6 +1,8 @@
 import { useState } from 'react';
 import { LogoIcon } from '~/svgs/logoIcon';
 import type { Route } from './+types/login';
+import { authApi } from '~/data/api';
+import { useNavigate } from 'react-router';
 
 export function meta({ }: Route.MetaArgs) {
   return [
@@ -10,13 +12,22 @@ export function meta({ }: Route.MetaArgs) {
 }
 
 const LoginPage = () => {
-  const [email, setEmail] = useState('');
+  const [email, setEmail] = useState('testing@tutorcruncher.com');
   const [password, setPassword] = useState('');
+  const [error, setError] = useState("")
+  const navigate = useNavigate();
 
-  const handleSubmit = (e: Event) => {
+  const handleSubmit = async (e: Event) => {
     e.preventDefault();
-    console.log('Hello world');
-  };
+
+    try {
+      const { access_token } = await authApi.login(email, password);
+      localStorage.setItem("token", access_token);
+      navigate("/")
+    } catch {
+      setError("Error, login details are incorrect")
+    }
+  }
 
   const handleTutorCruncherLogin = () => {
     console.log('Hello world');
@@ -69,13 +80,15 @@ const LoginPage = () => {
               </a>
             </div>
 
+            {error && <div className='text-red-600 border border-black p-3 text-center rounded-sm'>{error}</div>}
+
             <button
               type="submit"
               className="w-full bg-steel-blue text-white font-semibold py-3 px-6 rounded-xl transition-all duration-300 transform hover:scale-[1.02] shadow-lg hover:shadow-xl"
             >
               Sign In
             </button>
-          </form>
+          </form >
 
           <div className="my-8 flex items-center">
             <div className="flex-1 border-t border-navy-blue-15"></div>
@@ -93,6 +106,8 @@ const LoginPage = () => {
             Continue with TutorCruncher
           </button>
 
+
+
           <div className="mt-8 text-center">
             <p className="text-sm text-navy-blue-50">
               Don't have an account? {' '}
@@ -101,7 +116,7 @@ const LoginPage = () => {
               </a>
             </p>
           </div>
-        </div>
+        </div >
 
         <div className="text-center mt-8">
           <p className="text-xs text-navy-blue-50">
@@ -115,8 +130,8 @@ const LoginPage = () => {
             </a>
           </p>
         </div>
-      </div>
-    </div>
+      </div >
+    </div >
   )
 }
 

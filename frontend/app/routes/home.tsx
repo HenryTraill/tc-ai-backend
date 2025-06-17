@@ -3,9 +3,8 @@ import { Link } from "react-router";
 import { LessonListItem } from "~/components/LessonListItem";
 import { useState, useEffect } from "react";
 import { studentsApi, lessonsApi, type Student, type Lesson } from "../data/api";
-import type { LessonWithStudent } from "~/types/lessons";
-import { fullName } from "~/helpers/students";
 import { StatsCard } from "~/components/StatsCard";
+import { Button } from "~/components/ui/Button";
 
 export function meta({ }: Route.MetaArgs) {
   return [
@@ -76,12 +75,7 @@ export default function Home() {
   const totalStudents = students.length;
   const totalLessons = lessons.length;
 
-  const lessonsWithStudents: LessonWithStudent[] = lessons.map(lesson => ({
-    ...lesson,
-    studentName: fullName(students.find(s => s.id === lesson.student_id) as Student) || 'Unknown Student'
-  }));
-
-  const recentLessons = lessonsWithStudents
+  const recentLessons = lessons
     .sort((a, b) => new Date(b.created_at || b.start_dt).getTime() - new Date(a.created_at || a.start_dt).getTime())
     .slice(0, 3);
 
@@ -112,20 +106,20 @@ export default function Home() {
           <div className="px-6 py-5 border-b border-slate-200">
             <div className="flex justify-between items-center">
               <h2 className="text-xl font-semibold text-slate-800">Recent Lessons</h2>
-              <Link
-                to="/lessons"
-                className="inline-flex items-center bg-steel-blue px-4 py-2 text-white rounded-lg font-medium transition-all"
+              <Button
+                href="/lessons"
+                variant="ghost"
+                icon="arrow-right"
               >
                 View all lessons
-                <span className="ml-2">→</span>
-              </Link>
+              </Button>
             </div>
             <p className="text-slate-600">Latest tutoring sessions</p>
           </div >
           <div className="p-6">
             <div className="space-y-4">
               {recentLessons.map((lesson) => (
-                <LessonListItem lesson={lesson} />
+                <LessonListItem lesson={lesson} key={lesson.id} />
               ))}
             </div>
           </div>

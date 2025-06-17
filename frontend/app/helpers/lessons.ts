@@ -1,3 +1,17 @@
+import type { Student } from "~/data/api";
+import { fullName } from "./students";
+
+export const formatStudentNames = (students: Student[]): string => {
+  if (!students || students.length === 0) return 'Unknown Students';
+
+  const firstStudentName = fullName(students[0]);
+
+  if (students.length === 1) return firstStudentName;
+
+  return `${firstStudentName} + ${students.length - 1}`;
+};
+
+
 export function getDurationBetween(start: string, end: string): string {
   const startDate = new Date(start);
   const endDate = new Date(end);

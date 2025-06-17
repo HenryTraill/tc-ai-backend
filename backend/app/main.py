@@ -1,10 +1,12 @@
 import logging
 from contextlib import asynccontextmanager
 
-from fastapi import FastAPI
+from fastapi import FastAPI, HTTPException, Request
+from fastapi.exceptions import RequestValidationError
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import JSONResponse
 
-from .api import clients, lessons, students
+from .api import auth, lessons, students
 from .core.config import settings
 from .core.database import create_db_and_tables
 
@@ -59,8 +61,23 @@ app.add_middleware(
     allow_headers=['*'],
 )
 
+
+# Custom exception handlers
+@app.exception_handler(HTTPException)
+async def custom_http_exception_handler(request, exc):
+    return JSONResponse(
+        status_code=exc.status_code,
+        content={'detail': exc.detail},
+    )
+
+
+@app.exception_handler(RequestValidationError)
+async def validation_exception_handler(request: Request, exc: RequestValidationError):
+    return JSONResponse(status_code=422, content={'detail': exc.errors()})
+
+
 # Include routers
-app.include_router(clients.router, prefix='/api')
+app.include_router(auth.router, prefix='/api')
 app.include_router(students.router, prefix='/api')
 app.include_router(lessons.router, prefix='/api')
 

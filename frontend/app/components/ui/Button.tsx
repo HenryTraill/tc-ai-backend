@@ -16,13 +16,13 @@ export const Button = ({
   onClick,
   icon,
   disabled = false,
-  children = "Click me",
+  children = "",
   variant = "primary",
   type = "button",
   loading = false,
 }: ButtonProps) => {
   const base =
-    "inline-flex items-center px-4 py-2.5 rounded-lg font-medium transition-all";
+    "inline-flex items-center px-4 py-2.5 rounded-lg font-medium transition-all cursor-pointer";
   let styles = "";
 
   if (disabled) {
@@ -44,7 +44,7 @@ export const Button = ({
         break;
       case "ghost":
         styles =
-          "text-steel-blue hover:bg-steel-blue hover:text-white bg-transparent";
+          "text-steel-blue bg-transparent";
         break;
       default:
         styles = "bg-steel-blue text-white hover:bg-blue-700";
@@ -75,13 +75,14 @@ export const Button = ({
       className={`${base} ${styles}`}
       disabled={disabled}
     >
+      {/* TODO REMOVE MARGIN FROM ICON WHEN NO TEXT PRESENT */}
       {loading ? (
         <span className="loader spinner-border animate-spin w-4 h-4 mr-2 border-2 border-white border-t-transparent rounded-full"></span>
       ) : (
         <>
           {children}
           {icon && (
-            <span className={`ml-2 fa fa-fw fa-${icon} text-sm`}></span>
+            <span className={`ml-2 fa fa-fw fa-${icon} text-md`}></span>
           )}
         </>
       )}

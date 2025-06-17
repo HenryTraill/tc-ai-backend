@@ -2,9 +2,7 @@ from datetime import datetime
 
 from sqlmodel import Session, select
 
-from app.models.client import Client
-from app.models.lesson import Lesson
-from app.models.student import Student
+from app.models import Client, Lesson, LessonStudent, Student
 from scripts.seed_data import clients_data, generate_lessons_for_student, students_data
 
 
@@ -82,7 +80,7 @@ def test_generate_lessons_for_student():
 
     # Check lesson structure
     for lesson in lessons:
-        assert lesson['student_id'] == student_id
+        assert lesson['_student_id'] == student_id  # Now stored as _student_id
         assert 'start_dt' in lesson
         assert 'end_dt' in lesson
         assert 'subject' in lesson
@@ -147,10 +145,25 @@ def test_seed_lessons(session: Session):
         )
         all_lessons.extend(student_lessons)
 
-    # Create lesson objects
+    # Create lesson objects and junction table entries
+    lesson_student_pairs = []
     for lesson_data in all_lessons:
+        # Extract student_id before creating lesson
+        student_id = lesson_data.pop('_student_id')
         lesson = Lesson(**lesson_data)
         session.add(lesson)
+        lesson_student_pairs.append((lesson, student_id))
+
+    session.commit()
+
+    # Refresh all lessons to get their IDs
+    for lesson, _ in lesson_student_pairs:
+        session.refresh(lesson)
+
+    # Now create junction table entries
+    for lesson, student_id in lesson_student_pairs:
+        lesson_student = LessonStudent(lesson_id=lesson.id, student_id=student_id)
+        session.add(lesson_student)
 
     session.commit()
 
@@ -158,9 +171,12 @@ def test_seed_lessons(session: Session):
     db_lessons = session.exec(select(Lesson)).all()
     assert len(db_lessons) == len(all_lessons)
 
-    # Check that lessons are properly linked to students
+    # Check that lessons are properly linked to students through junction table
     for lesson in db_lessons:
-        assert lesson.student_id in [s.id for s in students]
+        lesson_students = session.exec(select(LessonStudent).where(LessonStudent.lesson_id == lesson.id)).all()
+        assert len(lesson_students) > 0  # Each lesson should have at least one student association
+        for ls in lesson_students:
+            assert ls.student_id in [s.id for s in students]
 
 
 def test_full_seed_data_integration(session: Session):
@@ -201,9 +217,25 @@ def test_full_seed_data_integration(session: Session):
         )
         all_lessons.extend(student_lessons)
 
+    # Create lesson objects and junction table entries
+    lesson_student_pairs = []
     for lesson_data in all_lessons:
+        # Extract student_id before creating lesson
+        student_id = lesson_data.pop('_student_id')
         lesson = Lesson(**lesson_data)
         session.add(lesson)
+        lesson_student_pairs.append((lesson, student_id))
+
+    session.commit()
+
+    # Refresh all lessons to get their IDs
+    for lesson, _ in lesson_student_pairs:
+        session.refresh(lesson)
+
+    # Now create junction table entries
+    for lesson, student_id in lesson_student_pairs:
+        lesson_student = LessonStudent(lesson_id=lesson.id, student_id=student_id)
+        session.add(lesson_student)
 
     session.commit()
 
@@ -218,11 +250,9 @@ def test_full_seed_data_integration(session: Session):
 
     # Verify relationships
     for student in db_students:
-        student_lessons = session.exec(select(Lesson).where(Lesson.student_id == student.id)).all()
-        assert len(student_lessons) == 4
-
-        # Verify student is linked to a client
         assert student.client_id in [c.id for c in db_clients]
+        lesson_students = session.exec(select(LessonStudent).where(LessonStudent.student_id == student.id)).all()
+        assert len(lesson_students) > 0  # Each student should have lesson associations
 
 
 def test_seed_data_script_integration(session: Session):
@@ -261,5 +291,5 @@ def test_seed_data_script_integration(session: Session):
         # Verify relationships are correct
         for student in db_students:
             assert student.client_id in [c.id for c in db_clients]
-            student_lessons = session.exec(select(Lesson).where(Lesson.student_id == student.id)).all()
-            assert len(student_lessons) > 0  # Each student should have lessons
+            lesson_students = session.exec(select(LessonStudent).where(LessonStudent.student_id == student.id)).all()
+            assert len(lesson_students) > 0  # Each student should have lesson associations

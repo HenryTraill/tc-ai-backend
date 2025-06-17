@@ -1,5 +1,5 @@
 import type { Route } from "./+types/lesson-detail";
-import { Link, useNavigate } from "react-router";
+import { Link } from "react-router";
 import { useState, useEffect } from "react";
 import { studentsApi, lessonsApi, type Student, type Lesson } from "../../data/api";
 import { Button } from "~/components/ui/Button";
@@ -7,7 +7,7 @@ import { fullName } from "~/helpers/students";
 import { DeleteModal } from "~/components/DeleteModal";
 import { LessonForm } from "~/components/forms/lessons";
 import { useSlideOutPanel } from "~/providers/SlideOutPanelProvider";
-import { formatDate, formatTime, getDurationBetween } from "~/helpers/lessons";
+import { formatDate, formatStudentNames, formatTime, getDurationBetween } from "~/helpers/lessons";
 
 
 export function meta({ params }: Route.MetaArgs) {
@@ -50,8 +50,6 @@ export default function LessonDetail({ params }: Route.ComponentProps) {
     }
   }, [lessonId]);
 
-  const student = students?.find(s => s.id === lesson?.student_id);
-
 
   if (loading) {
     return (
@@ -64,7 +62,7 @@ export default function LessonDetail({ params }: Route.ComponentProps) {
     );
   }
 
-  if (error || !lesson || !student) {
+  if (error || !lesson || !students) {
     return (
       <div className="p-8 min-h-full">
         <div className="max-w-6xl mx-auto">
@@ -99,7 +97,7 @@ export default function LessonDetail({ params }: Route.ComponentProps) {
             <Button
               onClick={() =>
                 openPanel({
-                  title: "Add New Lesson",
+                  title: "Edit Lesson",
                   content: <LessonForm students={students!} lesson={lesson!} />,
                 })
               }
@@ -123,13 +121,7 @@ export default function LessonDetail({ params }: Route.ComponentProps) {
                 <h1 className="text-4xl font-bold text-slate-800 mb-2">{lesson.topic}</h1>
                 <div className="flex items-center space-x-4 text-slate-600">
                   <span className="text-lg">{lesson.subject}</span>
-                  <span>•</span>
-                  <Link
-                    to={`/students/${student.id}`}
-                    className="text-lg font-medium hover:text-blue-600 transition-colors"
-                  >
-                    {fullName(student)}
-                  </Link>
+                  <span>•</span><span className="text-lg">{formatStudentNames(lesson.students)}</span>
                 </div>
               </div>
             </div>

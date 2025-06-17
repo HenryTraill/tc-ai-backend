@@ -1,4 +1,4 @@
-import { useForm } from "react-hook-form";
+import { useForm, Controller } from "react-hook-form";
 import { useNavigate } from "react-router";
 import { lessonsApi, type Lesson, type Student } from "../../data/api";
 import { Button } from "../ui/Button";
@@ -6,9 +6,10 @@ import { fullName } from "~/helpers/students";
 import { SlideOutPanelFooter } from "../SlideOutPanel";
 import { useRef, type RefObject } from "react";
 import { formatTimeForInput } from "~/helpers/lessons";
+import { MultiSelect } from "../ui/MultiSelect";
 
 interface LessonFormValues {
-  student_id: string;
+  student_ids: (string | number)[];
   date: string;
   start_time: string;
   end_time: string;
@@ -32,13 +33,21 @@ export const LessonForm = ({ students, lesson }: LessonFormProps) => {
   const navigate = useNavigate();
   const formRef: RefObject<HTMLFormElement | null> = useRef(null);
 
+  const studentOptions = students.map(student => ({
+    id: student.id,
+    label: fullName(student)
+  }));
+
   const {
     register,
     handleSubmit,
+    control, // Add control for Controller
     formState: { isSubmitting },
   } = useForm<LessonFormValues>({
     defaultValues: {
-      student_id: lesson?.student_id?.toString() ?? "",
+      student_ids: lesson?.students
+        ? lesson.students.map((s) => s.id)
+        : [],
       date: lesson?.start_dt ? lesson.start_dt.slice(0, 10) : "",
       start_time: lesson?.start_dt ? formatTimeForInput(lesson.start_dt) : "",
       end_time: lesson?.end_dt ? formatTimeForInput(lesson.end_dt) : "",
@@ -59,7 +68,7 @@ export const LessonForm = ({ students, lesson }: LessonFormProps) => {
     const end_dt = new Date(`${data.date}T${data.end_time}`);
 
     const payload = {
-      student_id: parseInt(data.student_id),
+      student_ids: data.student_ids.map(id => parseInt(id.toString())), // Convert to array of numbers
       start_dt: start_dt.toISOString(),
       end_dt: end_dt.toISOString(),
       subject: data.subject,
@@ -87,19 +96,26 @@ export const LessonForm = ({ students, lesson }: LessonFormProps) => {
       <div className="max-w-6xl mx-auto space-y-8">
         <div className="flex flex-col p-4 gap-4">
           <div>
-            <label className="text-sm font-medium text-slate-700 mb-1 block">Student</label>
-            <select
-              {...register("student_id")}
-              required
-
-            >
-              <option value="">Select a student</option>
-              {students.map((student) => (
-                <option key={student.id} value={student.id}>
-                  {fullName(student)}
-                </option>
-              ))}
-            </select>
+            <label className="text-sm font-medium text-slate-700 mb-1 block">
+              Students
+            </label>
+            <Controller
+              name="student_ids"
+              control={control}
+              rules={{ required: "Please select at least one student" }}
+              render={({ field: { onChange, value } }) => {
+                console.log('Controller render - value:', value);
+                return (
+                  <MultiSelect
+                    options={studentOptions}
+                    value={value || []} // Ensure value is never null/undefined
+                    onChange={onChange}
+                    placeholder="Select students..."
+                    className="w-full"
+                  />
+                );
+              }}
+            />
           </div>
 
           <div>
@@ -108,7 +124,7 @@ export const LessonForm = ({ students, lesson }: LessonFormProps) => {
               type="date"
               {...register("date")}
               required
-
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-blue-500"
             />
           </div>
 
@@ -119,7 +135,7 @@ export const LessonForm = ({ students, lesson }: LessonFormProps) => {
                 type="time"
                 {...register("start_time")}
                 required
-
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-blue-500"
               />
             </div>
 
@@ -129,7 +145,7 @@ export const LessonForm = ({ students, lesson }: LessonFormProps) => {
                 type="time"
                 {...register("end_time")}
                 required
-
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-blue-500"
               />
             </div>
           </div>
@@ -140,7 +156,7 @@ export const LessonForm = ({ students, lesson }: LessonFormProps) => {
               type="text"
               {...register("subject")}
               required
-
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-blue-500"
             />
           </div>
 
@@ -149,7 +165,7 @@ export const LessonForm = ({ students, lesson }: LessonFormProps) => {
             <select
               {...register("status")}
               required
-
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-blue-500"
             >
               <option value="planned">Planned</option>
               <option value="pending">Pending</option>
@@ -165,7 +181,7 @@ export const LessonForm = ({ students, lesson }: LessonFormProps) => {
               type="text"
               {...register("topic")}
               required
-
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-blue-500"
             />
           </div>
 
@@ -174,7 +190,7 @@ export const LessonForm = ({ students, lesson }: LessonFormProps) => {
             <textarea
               {...register("notes")}
               rows={4}
-
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-blue-500"
             />
           </div>
         </div>

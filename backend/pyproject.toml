@@ -17,16 +17,22 @@ dependencies = [
     "python-dotenv==1.1.0",
     "psycopg2-binary==2.9.10",
     "alembic==1.16.1",
+    "python-jose[cryptography]==3.3.0",
+    "passlib[bcrypt]==1.7.4",
+    "bcrypt==4.0.1",
 ]
 
-[project.optional-dependencies]
+[dependency-groups]
 dev = [
+    "devtools>=0.12.2",
     "ruff==0.11.13",
     "pytest==8.4.0",
     "pytest-sugar==1.0.0",
     "coverage==7.8.2",
     "pytest-asyncio==1.0.0",
     "httpx==0.28.1",
+    "dirty-equals==0.9.0",
+    "pytest-cov==6.2.1",
 ]
 
 [tool.ruff]
@@ -46,3 +52,4 @@ omit = ["tests/*"]
 
 [tool.pytest.ini_options]
 asyncio_mode = "auto" 
+addopts = "--cov-append --tb=native"

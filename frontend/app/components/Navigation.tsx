@@ -2,6 +2,7 @@ import { Link, useLocation } from "react-router";
 import { Button } from "./ui/Button";
 import { useEffect, useState } from "react";
 import { Logo } from "~/svgs/logo";
+import { authApi } from "~/data/api";
 
 export function Navigation() {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -81,7 +82,7 @@ export function Navigation() {
               <i className="fas fa-user w-4"></i>
               <span>Profile</span>
             </Link>
-            <button className="flex items-center space-x-3 px-3 py-2 rounded-lg text-sm text-slate-700 hover:bg-white/60 hover:text-blue-700 w-full text-left">
+            <button onClick={() => authApi.logout()} className="flex items-center space-x-3 px-3 py-2 rounded-lg text-sm text-slate-700 hover:bg-white/60 hover:text-blue-700 w-full text-left">
               <i className="fas fa-sign-out-alt w-4"></i>
               <span>Sign out</span>
             </button>

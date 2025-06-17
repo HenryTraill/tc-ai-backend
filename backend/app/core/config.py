@@ -8,7 +8,7 @@ class Settings(BaseSettings):
     model_config = ConfigDict(env_file='.env', case_sensitive=False)
 
     # Database
-    database_url: str = 'postgresql://admin:example@localhost/tcai'
+    database_url: str = 'postgresql://postgres@localhost/tcai'
 
     # Redis
     redis_url: str = 'redis://localhost:6379/0'
@@ -20,6 +20,11 @@ class Settings(BaseSettings):
 
     # CORS
     allowed_origins: str = 'http://localhost:3000,http://localhost:5173'
+
+    # JWT Authentication
+    secret_key: str = 'secret'
+    algorithm: str = 'HS256'
+    access_token_expire_minutes: int = 60 * 24 * 2  # 2 days
 
     # Sentry
     sentry_dsn: Optional[str] = None

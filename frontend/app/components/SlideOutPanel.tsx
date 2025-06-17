@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { Button } from "./ui/Button";
 
 type SlideOutPanelProps = {
   title: string;
@@ -52,13 +53,12 @@ export const SlideOutPanel = ({
       >
         <div className="flex justify-between items-center px-4 py-3 border-b">
           <h2 className="text-lg font-semibold text-slate-800">{title}</h2>
-          <button
+          <Button
             onClick={onClose}
-            className="text-slate-500 hover:text-slate-700 text-lg"
             aria-label="Close"
-          >
-            &times;
-          </button>
+            icon="times"
+            variant="ghost"
+          />
         </div>
 
         <div className="overflow-scroll max-h-[calc(100vh-54px)] bg-white">

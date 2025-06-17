@@ -2,8 +2,6 @@ import type { Route } from "./+types/calendar";
 import { useState, useEffect } from "react";
 import { studentsApi, lessonsApi, type Student, type Lesson } from "../data/api";
 import Calendar from "~/components/Calendar";
-import { fullName } from "~/helpers/students";
-import type { LessonWithStudent } from "~/types/lessons";
 
 export function meta({ }: Route.MetaArgs) {
   return [
@@ -38,7 +36,7 @@ export default function CalendarPage() {
     fetchData();
   }, []);
 
-  if (loading || !students.length) {
+  if (loading || !students?.length) {
     return (
       <div className="p-8 min-h-full bg-gray-50 flex items-center justify-center">
         <div className="text-center">
@@ -71,15 +69,10 @@ export default function CalendarPage() {
     );
   }
 
-  const lessonsWithStudents: LessonWithStudent[] = lessons.map(lesson => ({
-    ...lesson,
-    studentName: fullName(students.find(s => s.id === lesson.student_id)) || 'Unknown Student'
-  }));
-
   return (
     <div className="p-8 min-h-full bg-cream">
       <div className="max-w-6xl mx-auto">
-        <Calendar lessons={lessonsWithStudents} />
+        <Calendar lessons={lessons} />
       </div>
     </div>
   )

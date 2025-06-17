@@ -7,6 +7,9 @@ from sqlalchemy import JSON, Column
 from sqlmodel import Field, Relationship, SQLModel
 
 if TYPE_CHECKING:
+    from backend.app.models.company import Company
+    from backend.app.models.lesson_student import LessonStudent
+    from backend.app.models.lesson_tutor import LessonTutor
     from backend.app.models.student import Student
 
 
@@ -21,8 +24,7 @@ class LessonStatus(str, Enum):
 
 
 class LessonBase(SQLModel):
-    student_id: int = Field(foreign_key='student.id')
-    company_id: Optional[int] = Field(default=None)
+    company_id: Optional[int] = Field(default=None, foreign_key='company.id')
     tc_path: Optional[str] = None
     start_dt: datetime
     end_dt: datetime
@@ -42,15 +44,22 @@ class Lesson(LessonBase, table=True):
     created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
     updated_at: Optional[datetime] = None
 
-    student: Optional['Student'] = Relationship(back_populates='lessons')
+    # Relationships
+    lesson_students: List['LessonStudent'] = Relationship(back_populates='lesson')
+    lesson_tutors: List['LessonTutor'] = Relationship(back_populates='lesson')
+    company: Optional['Company'] = Relationship(back_populates='lessons')
+
+    @property
+    def students(self) -> List['Student']:
+        """Get all students for this lesson"""
+        return [ls.student for ls in self.lesson_students if ls.student]
 
 
 class LessonCreate(LessonBase):
-    pass
+    student_ids: List[int] = Field(default_factory=list)  # List of student IDs to associate with the lesson
 
 
 class LessonUpdate(BaseModel):
-    student_id: Optional[int] = None
     company_id: Optional[int] = None
     tc_path: Optional[str] = None
     start_dt: Optional[datetime] = None
@@ -59,6 +68,7 @@ class LessonUpdate(BaseModel):
     topic: Optional[str] = None
     notes: Optional[str] = None
     status: Optional[LessonStatus] = None
+    student_ids: Optional[List[int]] = None  # Allow updating associated students
     # Note: skills_practiced, main_subjects_covered, student_strengths_observed,
     # student_weaknesses_observed, and tutor_tips are intentionally excluded from updates
 
@@ -67,5 +77,4 @@ class LessonRead(LessonBase):
     id: int
     created_at: datetime
     updated_at: Optional[datetime] = None
-    company_name: Optional[str] = None
-    tutorcruncher_url: Optional[str] = None
+    students: List['Student'] = Field(default_factory=list)  # Include students in read response

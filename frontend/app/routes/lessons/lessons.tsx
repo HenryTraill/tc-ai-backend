@@ -2,7 +2,6 @@ import { LessonListItem } from "~/components/LessonListItem";
 import { useState, useEffect } from "react";
 import { studentsApi, lessonsApi, type Student, type Lesson } from "../../data/api";
 import { Button } from "~/components/ui/Button";
-import { fullName } from "~/helpers/students";
 import { useSlideOutPanel } from "~/providers/SlideOutPanelProvider";
 import { LessonForm } from "~/components/forms/lessons";
 import type { Route } from "./+types/lessons";
@@ -80,12 +79,7 @@ export default function Lessons() {
     );
   }
 
-  const lessonsWithStudents: LessonWithStudent[] = lessons.map(lesson => ({
-    ...lesson,
-    studentName: fullName(students.find(s => s.id === lesson.student_id) as Student) || 'Unknown Student'
-  }));
-
-  const sortedLessons = lessonsWithStudents.sort((a, b) =>
+  const sortedLessons = lessons.sort((a, b) =>
     new Date(b.start_dt).getTime() - new Date(a.start_dt).getTime()
   );
 
@@ -152,7 +146,7 @@ export default function Lessons() {
                       <span className="text-sm text-slate-700 font-medium">{subject}</span>
                     </div>
                     <div className="flex items-center">
-                      <span className="text-sm font-bold text-slate-800 bg-white px-2 py-1 rounded-lg shadow-sm">
+                      <span className="text-sm font-bold text-slate-800 bg-white px-2 py-1 rounded-lg">
                         {count}
                       </span>
                     </div>
@@ -181,7 +175,7 @@ export default function Lessons() {
             ) : (
               <div className="space-y-4">
                 {sortedLessons.map((lesson) => (
-                  <LessonListItem lesson={lesson} />
+                  <LessonListItem lesson={lesson} key={lesson.id} />
                 ))}
               </div>
             )}

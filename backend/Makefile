@@ -6,7 +6,7 @@ install:
 
 # Install dependencies (including dev packages)
 install-dev:
-	uv sync --extra dev
+	uv sync --dev
 
 # Run development server
 dev:

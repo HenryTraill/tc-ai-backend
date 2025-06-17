@@ -31,7 +31,7 @@ export interface StudentUpdate {
 
 export interface Lesson {
     id: number;
-    student_id: number;
+    student_ids: number[];
     company_id: number | null;
     tc_path: string | null;
     start_dt: string;
@@ -47,6 +47,7 @@ export interface Lesson {
     tutor_tips: string[];
     created_at: string;
     updated_at: string | null;
+    students: Student[];
 }
 
 export interface LessonCreate {
@@ -100,15 +101,22 @@ class ApiError extends Error {
     }
 }
 
+const getToken = () => localStorage.getItem("token");
+
 async function apiRequest<T>(endpoint: string, options: RequestInit = {}): Promise<T> {
     const url = `${API_BASE_URL}${endpoint}`;
+    const token = getToken();
+    const isLoginRoute = endpoint === "/auth/login";
+
+    const headers: HeadersInit = {
+        'Content-Type': 'application/json',
+        ...(options.headers || {}),
+        ...(isLoginRoute ? {} : token ? { Authorization: `Bearer ${token}` } : {}),
+    };
 
     const response = await fetch(url, {
-        headers: {
-            'Content-Type': 'application/json',
-            ...options.headers,
-        },
         ...options,
+        headers,
     });
 
     if (!response.ok) {
@@ -168,7 +176,6 @@ export const lessonsApi = {
         apiRequest(`/lessons/${id}`, { method: 'DELETE' }),
 };
 
-
 // Client API functions
 export const clientsApi = {
     getAll: (): Promise<Client[]> => apiRequest('/clients'),
@@ -189,4 +196,21 @@ export const clientsApi = {
 
     delete: (id: number): Promise<{ message: string }> =>
         apiRequest(`/clients/${id}`, { method: 'DELETE' }),
+};
+
+// Auth API functions
+export const authApi = {
+    login: (email: string, password: string): Promise<any> =>
+        apiRequest('/auth/login', {
+            method: 'POST',
+            body: JSON.stringify({ email, password }),
+        }),
+
+    logout: (): void => {
+        localStorage.removeItem("token");
+        window.location.href = "/login";
+    },
+
+    checkUser: (): Promise<any> =>
+        apiRequest('/auth/me'),
 };

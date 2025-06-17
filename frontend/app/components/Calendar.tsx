@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Link } from 'react-router';
 import type { Lesson } from '~/data/api';
-import { formatTime } from '~/helpers/lessons';
+import { formatStudentNames, formatTime } from '~/helpers/lessons';
 import { Button } from './ui/Button';
 
 const dateUtils = {
@@ -106,7 +106,9 @@ const LessonCard = ({ lesson, size = 'small', showDate = false }: { lesson: Less
 
       <div className="flex items-center gap-1 mt-1 text-xs">
         <i className="fas fa-user flex-shrink-0"></i>
-        <span className="truncate" title={lesson.studentName}>{lesson.studentName}</span>
+        <span className="truncate" title={formatStudentNames(lesson.students)}>
+          {formatStudentNames(lesson.students)}
+        </span>
       </div>
 
       <div className="flex items-center gap-1 mt-1 text-xs">
