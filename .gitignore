@@ -8,3 +8,55 @@ __pycache__/
 .coverage.*
 .env
 *.egg-info/
+
+# Byte-compiled / optimized / DLL files
+*.py[cod]
+*.pyo
+*.so
+
+# Distribution / packaging
+build/
+dist/
+.eggs/
+*.egg/
+*.egg-info/
+.wheel/
+pip-wheel-metadata/
+
+# Virtual environments (local)
+env/
+venv/
+.venv/
+
+# Logs
+*.log
+celerybeat-schedule
+
+# Unit test / coverage
+htmlcov/
+.coverage*
+*.cover
+.cache/
+coverage.xml
+
+# Type checking / linting caches
+.mypy_cache/
+.ruff_cache/
+
+# Poetry / PDM caches
+__pypackages__/
+
+# Operating system files
+.DS_Store
+Thumbs.db
+
+# IDEs
+.idea/
+.vscode/
+
+# Local env files
+.env
+.env.*
+
+# Databases
+*.sqlite3
