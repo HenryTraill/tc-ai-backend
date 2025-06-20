@@ -4,6 +4,8 @@ from sqlmodel import Session, SQLModel, create_engine
 
 from .config import settings
 
+settings.database_url = settings.database_url.replace('postgres://', 'postgresql://', 1)
+
 engine = create_engine(settings.database_url, echo=settings.debug)
 
 
