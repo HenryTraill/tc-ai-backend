@@ -26,20 +26,17 @@ jobs:
         version: "latest"
     
     - name: Install dependencies
-      working-directory: ./backend
       run: make install-dev
     
     - name: Run tests with coverage
-      working-directory: ./backend
       run: make test-cov
     
     - name: Run linting
-      working-directory: ./backend
       run: make lint
 
     - name: Upload coverage reports to Codecov
       uses: codecov/codecov-action@v5
       with:
         token: ${{ secrets.CODECOV_TOKEN }}
-        directory: ./backend
-        files: ./backend/coverage.xml
+        directory: ./app
+        files: ./app/coverage.xml

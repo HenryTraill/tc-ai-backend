@@ -1,137 +1,179 @@
-# TutorCruncher AI
+# TutorCruncher AI Backend
 
-A full-stack application for managing tutoring sessions, student profiles, and lesson tracking.
+FastAPI backend for the TutorCruncher AI tutoring management system.
 
-## Tech Stack
+## Features
 
-**Backend:**
-- FastAPI (Python)
-- SQLModel + PostgreSQL
-- uv for package management
+- **FastAPI** - Modern, fast web framework for building APIs
+- **SQLModel** - SQL databases in Python, designed for simplicity, compatibility, and robustness
+- **Celery** - Distributed task queue for background jobs
+- **PostgreSQL** - Production database
+- **Redis** - Caching and Celery message broker
+- **Logfire** - Observability and monitoring
+- **Sentry** - Error tracking and performance monitoring
+- **Ruff** - Fast Python linter and formatter
+- **Pytest** - Testing framework
 
-**Frontend:**
-- React + TypeScript
-- React Router
-- Tailwind CSS
-
-## Getting Started
+## Quick Start
 
 ### Prerequisites
+
 - Python 3.12+
-- Node.js 18+
 - PostgreSQL
+- Redis
+- uv (Python package manager)
 
-### Backend Setup
+### Installation
 
-1. Navigate to the backend directory:
-   ```bash
-   cd backend
-   ```
+1. Install dependencies:
+```bash
+uv sync
+```
 
-2. Install dependencies:
-   ```bash
-   make install-dev
-   ```
+2. Copy environment variables:
+```bash
+cp env.example .env
+```
 
-3. Create the database:
-   ```bash
-   make reset-db
-   ```
+3. Update `.env` with your database and service credentials
 
-4. Start the development server:
-   ```bash
-   make run-dev
-   ```
+4. Run database migrations:
+```bash
+# Database tables will be created automatically on first run
+```
 
-5. If you want seed data, then run:
-   ```bash
-   make seed
-   ```
+### Running the Application
 
-6. Create the .env file and add your DATABASE_URL to it
-   ```
-   DATABASE_URL = 'postgresql://postgres@localhost/tcai'
-   ```
+#### Development Server
+```bash
+# Using uv
+uv run python scripts/run_dev.py
 
+# Or directly with uvicorn
+uv run uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
+```
 
-The backend API will be available at `http://localhost:8000`
-- API docs: `http://localhost:8000/docs`
+#### Celery Worker
+```bash
+# In a separate terminal
+uv run celery -A app.core.celery_app worker --loglevel=info
+```
 
-### Frontend Setup
+#### Celery Beat (for scheduled tasks)
+```bash
+# In another terminal
+uv run celery -A app.core.celery_app beat --loglevel=info
+```
 
-1. Navigate to the frontend directory:
-   ```bash
-   cd frontend
-   ```
+## API Documentation
 
-2. Install dependencies:
-   ```bash
-   npm install
-   ```
-
-3. Start the development server:
-   ```bash
-   npm run dev
-   ```
-
-The frontend will be available at `http://localhost:5173`
+Once the server is running, visit:
+- **Swagger UI**: http://localhost:8000/docs
+- **ReDoc**: http://localhost:8000/redoc
 
 ## API Endpoints
 
 ### Students
-- `GET /students` - Get all students
-- `GET /students/{id}` - Get student by ID
-- `POST /students` - Create new student
-- `PUT /students/{id}` - Update student
-- `DELETE /students/{id}` - Delete student
+- `GET /api/students/` - List all students
+- `POST /api/students/` - Create a new student
+- `GET /api/students/{id}` - Get student by ID
+- `PUT /api/students/{id}` - Update student
+- `DELETE /api/students/{id}` - Delete student
 
 ### Lessons
-- `GET /lessons` - Get all lessons (optional: `?student_id=X`)
-- `GET /lessons/{id}` - Get lesson by ID
-- `GET /lessons/student/{student_id}` - Get lessons for specific student
-- `POST /lessons` - Create new lesson
-- `PUT /lessons/{id}` - Update lesson
-- `DELETE /lessons/{id}` - Delete lesson
+- `GET /api/lessons/` - List all lessons (with optional student filter)
+- `POST /api/lessons/` - Create a new lesson
+- `GET /api/lessons/{id}` - Get lesson by ID
+- `PUT /api/lessons/{id}` - Update lesson
+- `DELETE /api/lessons/{id}` - Delete lesson
+- `GET /api/lessons/student/{student_id}` - Get all lessons for a student
+
+## Testing
+
+Run tests with pytest:
+```bash
+uv run pytest
+```
+
+Run tests with coverage:
+```bash
+uv run coverage run -m pytest
+uv run coverage report
+```
+
+## Code Quality
+
+Format code with ruff:
+```bash
+uv run ruff format .
+```
+
+Lint code:
+```bash
+uv run ruff check .
+```
+
+## Environment Variables
+
+| Variable | Description | Default |
+|----------|-------------|---------|
+| `DATABASE_URL` | PostgreSQL connection string | `postgresql://user:password@localhost/tutorcruncher` |
+| `REDIS_URL` | Redis connection string | `redis://localhost:6379/0` |
+| `API_HOST` | API server host | `0.0.0.0` |
+| `API_PORT` | API server port | `8000` |
+| `DEBUG` | Enable debug mode | `True` |
+| `ALLOWED_ORIGINS` | CORS allowed origins | `http://localhost:3000,http://localhost:5173` |
+| `SENTRY_DSN` | Sentry error tracking DSN | `None` |
+| `LOGFIRE_TOKEN` | Logfire monitoring token | `None` |
+
+## Project Structure
+
+```
+backend/
+├── app/
+│   ├── api/           # API route handlers
+│   ├── core/          # Core configuration and setup
+│   ├── models/        # SQLModel database models
+│   └── tasks/         # Celery background tasks
+├── tests/             # Test files
+├── scripts/           # Utility scripts
+└── pyproject.toml     # Project configuration
+```
+
+## Background Tasks
+
+The application includes Celery for background task processing:
+
+- **Email Tasks**: Send lesson reminders and notifications
+- **Analytics Tasks**: Generate student reports and analytics
+
+## Monitoring
+
+- **Sentry**: Error tracking and performance monitoring
+- **Logfire**: Observability and structured logging
 
 ## Development
 
-### Backend Commands
-```bash
-# Install dependencies
-make install-dev
+### Adding New Models
 
-# Run development server
-make run-dev
+1. Create model in `app/models/`
+2. Add to `app/models/__init__.py`
+3. Create API routes in `app/api/`
+4. Add tests in `tests/`
 
-# Run tests
-make test
+### Adding Background Tasks
 
-# Format code
-make format
+1. Create task in `app/tasks/`
+2. Add to `app/tasks/__init__.py`
+3. Import in `app/core/celery_app.py`
 
-# Lint code
-make lint
+## Production Deployment
 
-# Reset database
-make reset-db
-```
+For production deployment, consider:
 
-### Frontend Commands
-```bash
-# Start development server
-npm run dev
-
-# Build for production
-npm run build
-
-# Preview production build
-npm run preview
-```
-
-## Features
-
-- **Student Management**: Create, view, edit, and delete student profiles
-- **Lesson Tracking**: Record detailed lesson information including skills practiced, subjects covered, and tutor observations
-- **Progress Monitoring**: Track student strengths, weaknesses, and lesson completion
-- **Dashboard**: Overview of lessons, statistics, and recent activity
-- **Responsive Design**: Works on desktop and mobile devices 
+1. Use a production WSGI server (e.g., Gunicorn)
+2. Set up proper database migrations with Alembic
+3. Configure environment variables securely
+4. Set up monitoring and logging
+5. Use a reverse proxy (e.g., Nginx)
+6. Set up SSL/TLS certificates 
